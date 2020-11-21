@@ -1,25 +1,20 @@
 #ifndef SEMAPHORE_SHARED_MEM
 #define SEMAPHORE_SHARED_MEM
 
-#define P1_ENC1_shared_mem_key_file "key/P1-ENC1-shared.mem.key"
-#define P1_ENC1_shared_mem_size_file sizeof(char*)
-#define ENC1_CHAN_shared_mem_key_file "key/ENC1-CHAN-shared.mem.key"
-#define ENC1_CHAN_shared_mem_size_file sizeof(message*)
-#define CHAN_ENC2_shared_mem_key_file "key/CHAN-ENC2-shared.mem.key"
-#define CHAN_ENC2_shared_mem_size_file sizeof(message*)
+#define P_ENC_shared_mem_key_file "key/P-ENC-shared.mem.key"
+#define P_ENC_shared_mem_size_file sizeof(char*)
+#define ENC_CHAN_shared_mem_key_file "key/ENC-CHAN-shared.mem.key"
+#define ENC_CHAN_shared_mem_size_file sizeof(message*)
 
-#define P1_semaphore_read_key_file "key/p1_read.semaphore.key"
-#define P1_semaphore_write_key_file "key/p1_write.semaphore.key"
-#define ENC1_semaphore_read_key_file "key/enc1_read.semaphore.key"
-#define ENC1_semaphore_write_key_file "key/enc1_write.semaphore.key"
+
+#define P_semaphore_read_key_file "key/p_read.semaphore.key"
+#define P_semaphore_write_key_file "key/p_write.semaphore.key"
+#define ENC_semaphore_read_key_file "key/enc_read.semaphore.key"
+#define ENC_semaphore_write_key_file "key/enc_write.semaphore.key"
 #define CHAN_semaphore_read_key_file "key/CHAN_read.semaphore.key"
+#define CHAN_semaphore_write_key_file "key/CHAN_write.semaphore.key"
 
 
-
-//#define p2_shared_mem_key_file "p2-shared.mem.key"
-//#define p2_shared_mem_size_file sizeof(queue)
-//#define p2_semaphore_key_file "p2.semaphore.key"
-//#define p2_semaphore_queue_key_file "p2-queue.semaphore.key"
 
 #include "helping_functions.hpp"
 void die(char er[1000]);
