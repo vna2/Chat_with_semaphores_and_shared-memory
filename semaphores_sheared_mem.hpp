@@ -2,13 +2,13 @@
 #define SEMAPHORE_SHARED_MEM
 
 #define P_ENC_shared_mem_key_file "key/P-ENC-shared.mem.key"
-#define P_ENC_shared_mem_size_file sizeof(char*)
+#define P_ENC_shared_mem_size_file sizeof(message*)
 #define ENC_CHAN_shared_mem_key_file "key/ENC-CHAN-shared.mem.key"
 #define ENC_CHAN_shared_mem_size_file sizeof(message*)
 #define CHAN_ENC_shared_mem_key_file "key/CHAN-ENC-shared.mem.key"
 #define CHAN_ENC_shared_mem_size_file sizeof(message*)
 #define ENC_P2_shared_mem_key_file "key/ENC-P-shared.mem.key"
-#define ENC_P2_shared_mem_size_file sizeof(char*)
+#define ENC_P2_shared_mem_size_file sizeof(message*)
 
 #define P_semaphore_read_key_file "key/p_read.semaphore.key"
 #define P_semaphore_write_key_file "key/p_write.semaphore.key"
