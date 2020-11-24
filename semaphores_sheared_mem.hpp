@@ -1,6 +1,8 @@
 #ifndef SEMAPHORE_SHARED_MEM
 #define SEMAPHORE_SHARED_MEM
 
+#define P_shared_mem_key_file "key/P-shared.mem.key"
+#define P_shared_mem_size_file sizeof(message*)
 #define P_ENC_shared_mem_key_file "key/P-ENC-shared.mem.key"
 #define P_ENC_shared_mem_size_file sizeof(message*)
 #define ENC_CHAN_shared_mem_key_file "key/ENC-CHAN-shared.mem.key"
