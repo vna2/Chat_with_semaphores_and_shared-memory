@@ -12,12 +12,12 @@
 #define ENC_P2_shared_mem_key_file "key/ENC-P-shared.mem.key"
 #define ENC_P2_shared_mem_size_file sizeof(message*)
 
-#define P_semaphore_read_key_file "key/p_read.semaphore.key"
-#define P_semaphore_write_key_file "key/p_write.semaphore.key"
-#define ENC_semaphore_read_key_file "key/enc_read.semaphore.key"
-#define ENC_semaphore_write_key_file "key/enc_write.semaphore.key"
-#define CHAN_semaphore_read_key_file "key/CHAN_read.semaphore.key"
-#define CHAN_semaphore_write_key_file "key/CHAN_write.semaphore.key"
+#define P_semaphore_p1_key_file "key/p_read.semaphore.key"
+#define P_semaphore_p2_key_file "key/p_write.semaphore.key"
+#define ENC_semaphore_p1_key_file "key/enc_read.semaphore.key"
+#define ENC_semaphore_p2_key_file "key/enc_write.semaphore.key"
+#define CHAN_semaphore_p1_key_file "key/CHAN_read.semaphore.key"
+#define CHAN_semaphore_p2_key_file "key/CHAN_write.semaphore.key"
 
 
 

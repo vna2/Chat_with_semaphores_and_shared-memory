@@ -3,7 +3,7 @@
 #include "md5/md5.h"
 using namespace std;
 
-int P(char* read_shared_mem_key_file,int read_shared_mem_size_file,char* write_shared_mem_key_file, int write_shared_mem_size_file,char* write_semaphore);
+int P(char* read_shared_mem_key_file,int read_shared_mem_size_file,char* write_shared_mem_key_file, int write_shared_mem_size_file,char* write_semaphore,char* read_semaphore);
 int ENC(char* read_shared_mem_key_file,int recive_shared_mem_size_file,char* write_shared_mem_key_file,int write_shared_mem_size_file,char* write_semaphore,char* read_semaphore);
 int CHAN(char* read_shared_mem_key_file, int read_shared_mem_size_file,char* write_shared_mem_key_file, int write_shared_mem_size_file,char* write_semaphore,char* read_semaphore);
 
@@ -33,11 +33,11 @@ int main(int argc, char const *argv[]) {
     key_t P_shared_mem_size =ftok("main.o",10);
 
     key_t P_semaphore_read_key =ftok("main.o",11);
-    key_t P_semaphore_write_key =ftok("main.o",12);
-    key_t ENC_semaphore_read_key =ftok("main.o",13);
-    key_t ENC_semaphore_write_key =ftok("main.o",14);
-    key_t CHAN_semaphore_read_key =ftok("main.o",15);
-    key_t CHAN_semaphore_write_key =ftok("main.o",16);
+    key_t P_semaphore_p2_key =ftok("main.o",12);
+    key_t ENC_semaphore_p1_key =ftok("main.o",13);
+    key_t ENC_semaphore_p2_key =ftok("main.o",14);
+    key_t CHAN_semaphore_p1_key =ftok("main.o",15);
+    key_t CHAN_semaphore_p2_key =ftok("main.o",16);
 
 
 //~~~~~~~~~~~~~~~~Shared_memory~~~~~~~~~~~~~~~~~~~~~~//
@@ -89,25 +89,27 @@ int main(int argc, char const *argv[]) {
 
 
 //~~~~~~~~~~~~~~~~Semaphore~~~~~~~~~~~~~~~~~~~~~~~~~//
-    int sem_P_write=generate_semaphore(P_semaphore_write_key,P_semaphore_write_key_file);
+    int sem_P_write=generate_semaphore(P_semaphore_p2_key,P_semaphore_p2_key_file);
     initialise_semaphore(sem_P_write);
-    int sem_P_read=generate_semaphore(P_semaphore_read_key, P_semaphore_read_key_file);
+    int sem_P_read=generate_semaphore(P_semaphore_read_key, P_semaphore_p1_key_file);
     initialise_semaphore(sem_P_read);
 
-    int sem_ENC_read=generate_semaphore(ENC_semaphore_read_key, ENC_semaphore_read_key_file);
+    int sem_ENC_read=generate_semaphore(ENC_semaphore_p1_key, ENC_semaphore_p1_key_file);
     initialise_semaphore(sem_ENC_read);
-    int sem_ENC_write=generate_semaphore(ENC_semaphore_write_key, ENC_semaphore_write_key_file);
+    int sem_ENC_write=generate_semaphore(ENC_semaphore_p2_key, ENC_semaphore_p2_key_file);
     initialise_semaphore(sem_ENC_write);
 
-    int sem_CHAN_read=generate_semaphore(CHAN_semaphore_read_key, CHAN_semaphore_read_key_file);
+    int sem_CHAN_read=generate_semaphore(CHAN_semaphore_p1_key, CHAN_semaphore_p1_key_file);
     initialise_semaphore(sem_CHAN_read);
-    int sem_CHAN_write=generate_semaphore(CHAN_semaphore_write_key, CHAN_semaphore_write_key_file);
+    int sem_CHAN_write=generate_semaphore(CHAN_semaphore_p2_key, CHAN_semaphore_p2_key_file);
     initialise_semaphore(sem_CHAN_write);
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+    //int sem__id  = get_semaphore_id_from_file(P_semaphore_p2_key_file);
+    int sem_write_id = get_semaphore_id_from_file(P_semaphore_p1_key_file);
 
-    for (size_t i = 0; i < 1; i++) {
-        sleep(2);
+    for (size_t i = 0; i <1; i++) {
+        //sleep(2);
         cout << "\n\n\n\n\n\n\n\n\n\n\n\n";
         //~~~~~~~~~~~~~~~~~~~memory~~~~~~~~~~~~~~~~~~~~~~~//
         /* Attach the shared memory segment. */
@@ -124,6 +126,11 @@ int main(int argc, char const *argv[]) {
         #if DEBUG>= 2
         cout<<"\t"<<getpid()<<" detached memory P-ENC\n";
         #endif
+        semaphore_signal(sem_write_id);
+        #if DEBUG >= 1
+            printf("~ write_P %d releasing\n", getpid());
+        #endif
+
 
 
 
@@ -135,7 +142,7 @@ int main(int argc, char const *argv[]) {
         processID_P=fork();
         if(processID_P==-1) die("fork failed");
         else if (processID_P==0){
-                P(P_shared_mem_key_file,P_shared_mem_size_file,P_ENC_shared_mem_key_file,P_ENC_shared_mem_size_file ,P_semaphore_write_key_file);
+                P(P_shared_mem_key_file,P_shared_mem_size_file,P_ENC_shared_mem_key_file,P_ENC_shared_mem_size_file ,ENC_semaphore_p1_key_file,P_semaphore_p1_key_file);
             exit(0);
         }
 
@@ -151,7 +158,7 @@ int main(int argc, char const *argv[]) {
         processID_ENC=fork();
         if(processID_ENC==-1) die("fork failed");
         else if (processID_ENC==0){
-           ENC(P_ENC_shared_mem_key_file,P_ENC_shared_mem_size_file,ENC_CHAN_shared_mem_key_file,ENC_CHAN_shared_mem_size_file,ENC_semaphore_read_key_file,ENC_semaphore_write_key_file);
+           ENC(P_ENC_shared_mem_key_file,P_ENC_shared_mem_size_file,ENC_CHAN_shared_mem_key_file,ENC_CHAN_shared_mem_size_file,CHAN_semaphore_p1_key_file,ENC_semaphore_p1_key_file);
            exit(0);
         }
 
@@ -167,24 +174,24 @@ int main(int argc, char const *argv[]) {
         processID_CHAN=fork();
         if(processID_CHAN==-1) die("fork failed");
         else if (processID_CHAN==0){
-            CHAN(ENC_CHAN_shared_mem_key_file,ENC_CHAN_shared_mem_size_file,CHAN_ENC_shared_mem_key_file,CHAN_ENC_shared_mem_size_file,CHAN_semaphore_read_key_file,CHAN_semaphore_write_key_file);
+            CHAN(ENC_CHAN_shared_mem_key_file,ENC_CHAN_shared_mem_size_file,CHAN_ENC_shared_mem_key_file,CHAN_ENC_shared_mem_size_file,ENC_semaphore_p1_key_file,CHAN_semaphore_p1_key_file);
             exit(0);
         }
 
-        sleep(5);
-        cout << "\n\n\n\n\n\n\n\n\n\n\n\n";
+         sleep(5);
+         cout << "\n\n\n\n\n\n\n\n\n\n\n\n";
 
-        // //~~~~~~~~~~~~ENC2~~~~~~~~~~//
-        // pid_t processID_ENC2;
-        // #if DEBUG >= 1
-        //    cout<<"!! starting ENC... !!\n";
-        // #endif
-        // processID_ENC=fork();
-        // if(processID_ENC==-1) die("fork failed");
-        // else if (processID_ENC==0){
-        //    ENC(CHAN_ENC_shared_mem_key_file,CHAN_ENC_shared_mem_size_file,ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file);
-        //    exit(0);
-        // }
+        //~~~~~~~~~~~~ENC2~~~~~~~~~~//
+        pid_t processID_ENC2;
+        #if DEBUG >= 1
+           cout<<"!! starting ENC... !!\n";
+        #endif
+        processID_ENC2=fork();
+        if(processID_ENC==-1) die("fork failed");
+        else if (processID_ENC2==0){
+           ENC(CHAN_ENC_shared_mem_key_file,CHAN_ENC_shared_mem_size_file,ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,CHAN_semaphore_p1_key_file,ENC_semaphore_p1_key_file);
+           exit(0);
+        }
 
 
     }
@@ -200,10 +207,18 @@ int main(int argc, char const *argv[]) {
     return 0;
 }
 
-int P(char* read_shared_mem_key_file,int read_shared_mem_size_file,char* write_shared_mem_key_file, int write_shared_mem_size_file,char* write_semaphore){
+int P(char* read_shared_mem_key_file,int read_shared_mem_size_file,char* write_shared_mem_key_file, int write_shared_mem_size_file,char* write_semaphore,char* read_semaphore){
     #if DEBUG >= 1
         cout<<"- P born now ID "<<getpid()<<" with parent  "<<getppid()<<endl;
     #endif
+    //~~~~~~~~~~~~~~~~~~~semaphore~~~~~~~~~~~~~~~~~~~~~~~//
+    int sem_read_id  = get_semaphore_id_from_file(read_semaphore);
+    int sem_write_id = get_semaphore_id_from_file(write_semaphore);
+
+    #if DEBUG >= 1
+        printf("~ read P %d waiting\n", getpid());
+    #endif
+    semaphore_wait(sem_read_id);
 
     //~~~~~~~~~~~~~~~~~~~memory~~~~~~~~~~~~~~~~~~~~~~~//
     /* Attach the shared memory segment. */
@@ -227,23 +242,20 @@ int P(char* read_shared_mem_key_file,int read_shared_mem_size_file,char* write_s
     //~~~~~~~~~~~~~~~~~~~~~~~~~READ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
     message* mess = new message(shared_memory_read->message_arrey);
+    #if DEBUG >= 1
+        printf ("\t- shared memory read_P"); mess->print();
+    #endif
 
-    //~~~~~~~~~~~~~~~~~~~semaphore~~~~~~~~~~~~~~~~~~~~~~~//
-    //int sem_read_id  = get_semaphore_id_from_file(P_semaphore_read_key_file);
-    int sem_write_id = get_semaphore_id_from_file(write_semaphore);
 
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~SEND~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+    //~~~~~~~~~~~~~~~~~~~~~~~~~WRITE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
     #if DEBUG >= 1
         //printf("~ read P->ENC %d waiting\n", getpid());
     #endif
-    semaphore_signal(sem_write_id);
+
     strcpy(shared_memory_write->message_arrey,shared_memory_read->message_arrey);
     #if DEBUG >= 1
-        printf("\twrite_P shared memmory: %s \n",shared_memory_write);
-        printf("~ write_P %d releasing\n", getpid());
+        printf ("\t- shared memory write_P"); shared_memory_write->print();
     #endif
-    semaphore_wait(sem_write_id);
 
     //~~~~~~~~~~~~~~~~~~~clears~~~~~~~~~~~~~~~~~~~~~~~//
     /* Detach the shared memory segment. */
@@ -255,6 +267,12 @@ int P(char* read_shared_mem_key_file,int read_shared_mem_size_file,char* write_s
     #if DEBUG>= 2
     cout<<"\t"<<getpid()<<" detached memory P-ENC\n";
     #endif
+
+    semaphore_signal(sem_write_id);
+    #if DEBUG >= 1
+    printf("~ write P %d releasing\n", getpid());
+    #endif
+
     return 0;
 }
 
@@ -264,7 +282,14 @@ int ENC(char* read_shared_mem_key_file,int read_shared_mem_size_file,char* write
     #if DEBUG >= 1
     cout<<"- ENC born now ID "<<getpid()<<" with parent  "<<getppid()<<endl;
     #endif
+    //~~~~~~~~~~~~~~~~~~~semaphore~~~~~~~~~~~~~~~~~~~~~~~//
+    int sem_read_id  = get_semaphore_id_from_file(read_semaphore);
+    int sem_write_id  = get_semaphore_id_from_file(write_semaphore);
 
+    #if DEBUG >= 1
+    printf("~ENC %d waiting\n", getpid());
+    #endif
+    semaphore_wait(sem_read_id);
 
     //~~~~~~~~~~~~~~~~~~~memory~~~~~~~~~~~~~~~~~~~~~~~//
     /* Attach the shared memory segment. */
@@ -272,20 +297,12 @@ int ENC(char* read_shared_mem_key_file,int read_shared_mem_size_file,char* write
     message* shared_memory_read = (message*) shmat(mem_seg_read_id, NULL, 0);
     if(shared_memory_read==(void*)-1)die("shared memory ENC-read");
 
-    //~~~~~~~~~~~~~~~~~~~semaphore~~~~~~~~~~~~~~~~~~~~~~~//
-    int sem_read_id  = get_semaphore_id_from_file(read_semaphore);
-    int sem_write_id  = get_semaphore_id_from_file(write_semaphore);
 
     //~~~~~~~~~~~~~~~~~READ FROM P~~~~~~~~~~~~~~~~~~//
-    semaphore_signal(sem_read_id);
-    #if DEBUG >= 1
-        printf("~ read ENC %d releasing\n", getpid());
-    #endif
     message* mess = new message(shared_memory_read->message_arrey);
-    semaphore_wait(sem_read_id);
     #if DEBUG >= 1
-        printf("~ read ENC %d waiting\n", getpid());
-        printf ("\t- shared memory read_ENC: %s\n", shared_memory_read->message_arrey);
+        printf("~ read ENC %d \n", getpid());
+        printf ("\t- shared memory read_ENC"); shared_memory_read->print();
     #endif
 
     /* Detach the shared memory segment. */
@@ -301,10 +318,6 @@ int ENC(char* read_shared_mem_key_file,int read_shared_mem_size_file,char* write
     strcpy(mess->checksum,checksum);
     mess->flag_checksum=0;
 
-    //cout << checksum << endl <<endl;
-    #if DEBUG >= 1
-        mess->print();
-    #endif
 
 
 
@@ -316,17 +329,12 @@ int ENC(char* read_shared_mem_key_file,int read_shared_mem_size_file,char* write
     message* shared_memory_write = (message*) shmat(mem_seg_write_id, NULL, 0);
     if(shared_memory_write==(void*)-1)die("shared memory ENC-write");
 
-    semaphore_signal(sem_write_id);
-    #if DEBUG >= 1
-        printf("~ write ENC %d releasing\n", getpid());
-    #endif
+
     strcpy(shared_memory_write->message_arrey,mess->message_arrey);
     strcpy(shared_memory_write->checksum,mess->checksum);
     shared_memory_write->flag_checksum= mess->flag_checksum;
-    semaphore_wait(sem_write_id);
     #if DEBUG >= 1
-        printf("~ write ENC %d waiting\n", getpid());
-        shared_memory_write->print();
+        printf ("\t- shared memory write_ENC"); shared_memory_write->print();
     #endif
 
     /* Detach the shared memory segment. */
@@ -334,6 +342,11 @@ int ENC(char* read_shared_mem_key_file,int read_shared_mem_size_file,char* write
     #if DEBUG>= 2
         cout<<"\t"<<getpid()<<" detached memory ENC_CHAN\n";
     #endif
+    semaphore_signal(sem_write_id);
+    #if DEBUG >= 1
+        printf("~ write ENC %d releasing\n", getpid());
+    #endif
+
     return 0;
 
 
@@ -349,29 +362,27 @@ int CHAN(char* read_shared_mem_key_file, int read_shared_mem_size_file,char* wri
     int sem_write_id  = get_semaphore_id_from_file(write_semaphore);
 
     //~~~~~~~~~~~~~~~~~READ~~~~~~~~~~~~~~~~~~//
-
+    #if DEBUG >= 1
+    printf("~ read ENC %d waiting\n", getpid());
+    #endif
+    semaphore_wait(sem_read_id);
     //~~~~~~~~~~~~~~~~~~~~memory~~~~~~~~~~~~~~~~~~~~~~~//
     /* Attach the shared memory segment. */
     int mem_seg_read_id=get_memory_id_from_file(read_shared_mem_key_file,read_shared_mem_size_file);
     message* shared_memory_read = (message*) shmat(mem_seg_read_id, NULL, 0);
     if(shared_memory_read==(void*)-1)die("shared memory CHAN-read");
 
-    semaphore_signal(sem_read_id);
-    #if DEBUG >= 1
-        printf("~ read CHAN %d releasing\n", getpid());
-        //cout << "sheard mem CHAN read : "<<shared_memory_read->message_arrey <<endl;
-    #endif
     message* mess = new message(shared_memory_read->message_arrey);
 
     strcpy(mess->checksum,shared_memory_read->checksum);
     mess->flag_checksum= shared_memory_read->flag_checksum;
-    semaphore_wait(sem_read_id);
     #if DEBUG >= 1
-        printf("~ read CHAN %d waiting\n", getpid());
-        shared_memory_read->print();
+        printf ("\t- shared memory read_ENC"); mess->print();
     #endif
-    #if DEBUG >= 2
-        cout << "\t Message value read CHAN: ";mess->print();
+    /* Detach the shared memory segment. */
+    shmdt(shared_memory_read);
+    #if DEBUG>= 2
+        cout<<"\t"<<getpid()<<" detached memory ENC_CHAN\n";
     #endif
 
     //~~~~~~~~~~~~~~~CHANGE ON CHANEL~~~~~~~~~~~~~~~~//
@@ -384,21 +395,21 @@ int CHAN(char* read_shared_mem_key_file, int read_shared_mem_size_file,char* wri
     message* shared_memory_write = (message*) shmat(mem_seg_write_id, NULL, 0);
     if(shared_memory_write==(void*)-1)die("shared memory CHAN-write");
 
-    semaphore_signal(sem_write_id);
-    #if DEBUG >= 1
-        printf("~ write CHAN %d releasing\n", getpid());
-        //cout << "sheard mem CHAN read : "<<shared_memory_read->message_arrey <<endl;
-    #endif
+    strcpy(shared_memory_write->message_arrey,mess->message_arrey);
     strcpy(shared_memory_write->checksum,mess->checksum);
     shared_memory_write->flag_checksum = mess->flag_checksum;
-    semaphore_wait(sem_write_id);
     #if DEBUG >= 1
-        printf("~ read CHAN %d waiting\n", getpid());
-        shared_memory_read->print();
-    #endif
-    #if DEBUG >= 2
-        cout << "\t Message value write CHAN: ";mess->print();
+        printf ("\t- shared memory write_CHAN"); shared_memory_write->print();
     #endif
 
+    /* Detach the shared memory segment. */
+    shmdt(shared_memory_write);
+    #if DEBUG>= 2
+        cout<<"\t"<<getpid()<<" detached memory CHAN_ENC\n";
+    #endif
+    semaphore_signal(sem_write_id);
+    #if DEBUG >= 1
+        printf("~ write ENC %d releasing\n", getpid());
+    #endif
 
 }
