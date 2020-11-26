@@ -38,6 +38,7 @@ class message{
     message(char* message){
         //this->message_length = strlen(message);
         strcpy(message_arrey,message);
+        flag_checksum=-1;
         //cout << message_arrey << endl;
         #if DEBUG>= 3
             cout << "!! Constractor message end his job \n";

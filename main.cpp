@@ -6,7 +6,7 @@ using namespace std;
 int P(char* read_shared_mem_key_file,int read_shared_mem_size_file,char* write_shared_mem_key_file, int write_shared_mem_size_file,char* write_semaphore,char* read_semaphore);
 int ENC(char* read_shared_mem_key_file,int recive_shared_mem_size_file,char* write_shared_mem_key_file,int write_shared_mem_size_file,char* write_semaphore,char* read_semaphore);
 int CHAN(char* read_shared_mem_key_file, int read_shared_mem_size_file,char* write_shared_mem_key_file, int write_shared_mem_size_file,char* write_semaphore,char* read_semaphore);
-
+int flag_resend=0;
 int main(int argc, char const *argv[]) {
     char* temp[5];
     int status =0;
@@ -146,7 +146,7 @@ int main(int argc, char const *argv[]) {
             exit(0);
         }
 
-        sleep(5);
+        sleep(2);
         cout << "\n\n\n\n\n\n\n\n\n\n\n\n";
 
 
@@ -163,7 +163,7 @@ int main(int argc, char const *argv[]) {
         }
 
 
-        sleep(5);
+        sleep(2);
         cout << "\n\n\n\n\n\n\n\n\n\n\n\n";
 
         //~~~~~~~~~~~~CHAN~~~~~~~~~~//
@@ -178,7 +178,7 @@ int main(int argc, char const *argv[]) {
             exit(0);
         }
 
-         sleep(5);
+         sleep(2);
          cout << "\n\n\n\n\n\n\n\n\n\n\n\n";
 
         //~~~~~~~~~~~~ENC2~~~~~~~~~~//
@@ -192,6 +192,21 @@ int main(int argc, char const *argv[]) {
            ENC(CHAN_ENC_shared_mem_key_file,CHAN_ENC_shared_mem_size_file,ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,CHAN_semaphore_p1_key_file,ENC_semaphore_p1_key_file);
            exit(0);
         }
+
+        sleep(2);
+        cout << "\n\n\n\n\n\n\n\n\n\n\n\n";
+
+       //~~~~~~~~~~~~P2~~~~~~~~~~//
+       // pid_t processID_P2;
+       // #if DEBUG >= 1
+       //    cout<<"!! starting P2... !!\n";
+       // #endif
+       // processID_P2=fork();
+       // if(processID_ENC==-1) die("fork failed");
+       // else if (processID_P2==0){
+       //    ENC(ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,ENC_semaphore_p1_key_file,P_semaphore_p2_key_file);
+       //    exit(0);
+       // }
 
 
     }
@@ -253,6 +268,7 @@ int P(char* read_shared_mem_key_file,int read_shared_mem_size_file,char* write_s
     #endif
 
     strcpy(shared_memory_write->message_arrey,shared_memory_read->message_arrey);
+    shared_memory_write->flag_checksum=mess->flag_checksum;
     #if DEBUG >= 1
         printf ("\t- shared memory write_P"); shared_memory_write->print();
     #endif
@@ -279,6 +295,7 @@ int P(char* read_shared_mem_key_file,int read_shared_mem_size_file,char* write_s
 
 
 int ENC(char* read_shared_mem_key_file,int read_shared_mem_size_file,char* write_shared_mem_key_file,int write_shared_mem_size_file,char* write_semaphore,char* read_semaphore ){
+    int resend_flag=0;
     #if DEBUG >= 1
     cout<<"- ENC born now ID "<<getpid()<<" with parent  "<<getppid()<<endl;
     #endif
@@ -300,6 +317,7 @@ int ENC(char* read_shared_mem_key_file,int read_shared_mem_size_file,char* write
 
     //~~~~~~~~~~~~~~~~~READ FROM P~~~~~~~~~~~~~~~~~~//
     message* mess = new message(shared_memory_read->message_arrey);
+    mess->flag_checksum=shared_memory_read->flag_checksum;
     #if DEBUG >= 1
         printf("~ read ENC %d \n", getpid());
         printf ("\t- shared memory read_ENC"); shared_memory_read->print();
@@ -313,10 +331,25 @@ int ENC(char* read_shared_mem_key_file,int read_shared_mem_size_file,char* write
 
     //~~~~~~~~~~~~~~~~~~~~ENC-JOB~~~~~~~~~~~~~~~~~~~~~//
 
-    char* checksum = new char[50];
+    char* checksum = new char[1000];
     strcpy(checksum,md5(mess->message_arrey).c_str());
-    strcpy(mess->checksum,checksum);
-    mess->flag_checksum=0;
+    if(mess->flag_checksum==-1){
+        cout << "FIRST IF \n";
+        strcpy(mess->checksum,checksum);
+        mess->flag_checksum=0;
+
+    }
+    else if(strcmp(md5(mess->message_arrey).c_str(),mess->checksum)!=0){
+        #if DEBUG>= 2
+        cout<<" different checksum try resend\n";
+        #endif
+        cout << "SECOND IF \n";
+        resend_flag=-1;
+    }
+    else if(mess->flag_checksum==0){
+        cout << "THIRD IF \n";
+        strcpy(mess->checksum,checksum);
+    }
 
 
 
@@ -346,8 +379,8 @@ int ENC(char* read_shared_mem_key_file,int read_shared_mem_size_file,char* write
     #if DEBUG >= 1
         printf("~ write ENC %d releasing\n", getpid());
     #endif
-
-    return 0;
+    //if
+    return resend_flag;
 
 
 }
@@ -386,6 +419,7 @@ int CHAN(char* read_shared_mem_key_file, int read_shared_mem_size_file,char* wri
     #endif
 
     //~~~~~~~~~~~~~~~CHANGE ON CHANEL~~~~~~~~~~~~~~~~//
+        strcpy(mess->message_arrey,"aaaaa");
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
