@@ -12,17 +12,22 @@
 #define ENC_P2_shared_mem_key_file "key/ENC-P-shared.mem.key"
 #define ENC_P2_shared_mem_size_file sizeof(message*)
 
-#define P_semaphore_p1_key_file "key/p_read.semaphore.key"
-#define P_semaphore_p2_key_file "key/p_write.semaphore.key"
-#define ENC_semaphore_p1_key_file "key/enc_read.semaphore.key"
-#define ENC_semaphore_p2_key_file "key/enc_write.semaphore.key"
-#define CHAN_semaphore_p1_key_file "key/CHAN_read.semaphore.key"
-#define CHAN_semaphore_p2_key_file "key/CHAN_write.semaphore.key"
-
+#define P_semaphore_p1_key_file "key/p_p1.semaphore.key"
+#define P_semaphore_p2_key_file "key/p_p2.semaphore.key"
+#define ENC_semaphore_p1_key_file "key/enc_p1.semaphore.key"
+#define ENC_semaphore_p2_key_file "key/enc_p2.semaphore.key"
+#define CHAN_semaphore_p1_key_file "key/CHAN_p1.semaphore.key"
+#define CHAN_semaphore_p2_key_file "key/CHAN_p2.semaphore.key"
+#define ENC2_semaphore_p1_key_file "key/encc_p1.semaphore.key"
+#define ENC2_semaphore_p2_key_file "key/encc_p2.semaphore.key"
+#define P2_semaphore_p1_key_file "key/p2_p1.semaphore.key"
+#define P2_semaphore_p2_key_file "key/p2_p2.semaphore.key"
 
 
 #include "helping_functions.hpp"
 void die(char er[1000]);
+
+
 
 int generate_memory_segment(key_t mem_key, size_t mem_sz, char* file_name){
     int mem_seg_id,mem_fd;
@@ -177,6 +182,106 @@ void clear_sem(char* sem_file, unsigned int num=0){
     #endif
 }
 
+void initialized_all_shared_memmory_semaphores(){
+
+    //~~~~~~~~~~~~~~~~Generate_keys~~~~~~~~~~~~~~~~~~~~~~//
+        key_t P_ENC_shared_mem_key =ftok("p.o",1);
+        key_t P_ENC_shared_mem_size =ftok("p.o",2);
+        key_t ENC_CHAN_shared_mem_key =ftok("p.o",3);
+        key_t ENC_CHAN_shared_mem_size =ftok("p.o",4);
+        key_t CHAN_ENC_shared_mem_key =ftok("p.o",5);
+        key_t CHAN_ENC_shared_mem_size =ftok("p.o",6);
+        key_t ENC_P2_shared_mem_key =ftok("p.o",7);
+        key_t ENC_P2_shared_mem_size =ftok("p.o",8);
+        key_t P_shared_mem_key =ftok("p.o",9);
+        key_t P_shared_mem_size =ftok("p.o",10);
+
+        key_t P_semaphore_p1_key =ftok("p.o",11);
+        key_t P_semaphore_p2_key =ftok("p.o",12);
+        key_t ENC_semaphore_p1_key =ftok("p.o",13);
+        key_t ENC_semaphore_p2_key =ftok("p.o",14);
+        key_t CHAN_semaphore_p1_key =ftok("p.o",15);
+        key_t CHAN_semaphore_p2_key =ftok("p.o",16);
+        key_t ENC2_semaphore_p1_key=ftok("p.o",17);
+        key_t ENC2_semaphore_p2_key =ftok("p.o",18);
+        key_t P2_semaphore_p1_key =ftok("p.o",19);
+        key_t P2_semaphore_p2_key =ftok("p.o",20);
+
+    //~~~~~~~~~~~~~~~~Shared_memory~~~~~~~~~~~~~~~~~~~~~~//
+        //Shared_memory for P
+        generate_memory_segment(P_shared_mem_key,P_shared_mem_size,P_shared_mem_key_file);
+        int P_mem_id=get_memory_id_from_file(P_shared_mem_key_file,P_shared_mem_size);
+        char* mem_P = (char*) shmat(P_mem_id, NULL, 0);
+        if(mem_P==(void*)-1)die("shared memory main");
+        #if DEBUG >= 2
+            printf ("!! shared mem_P attached at main and initialized !!\n");
+        #endif
+
+        //Shared_memory for P -> ENC
+        generate_memory_segment(P_ENC_shared_mem_key,P_ENC_shared_mem_size,P_ENC_shared_mem_key_file);
+        int P_ENC_mem_id=get_memory_id_from_file(P_ENC_shared_mem_key_file,P_ENC_shared_mem_size);
+        char* mem_P_ENC = (char*) shmat(P_ENC_mem_id, NULL, 0);
+        if(mem_P_ENC==(void*)-1)die("shared memory main");
+        #if DEBUG >= 2
+            printf ("!! shared mem_P_ENC attached at main and initialized !!\n");
+        #endif
+
+        //Shared_memory for ENC -> CHAN
+        generate_memory_segment(ENC_CHAN_shared_mem_key,ENC_CHAN_shared_mem_size,ENC_CHAN_shared_mem_key_file);
+        int ENC_CHAN_mem_id=get_memory_id_from_file(ENC_CHAN_shared_mem_key_file,ENC_CHAN_shared_mem_size);
+        char* mem_ENC_CHAN = (char*) shmat(ENC_CHAN_mem_id, NULL, 0);
+        if(mem_ENC_CHAN==(void*)-1)die("shared memory main");
+        #if DEBUG >= 2
+            printf ("!! shared mem_ENC_CHAN attached at main and initialized !!\n");
+        #endif
+
+        //Shared_memory for CHAN -> ENC
+        generate_memory_segment(CHAN_ENC_shared_mem_key,CHAN_ENC_shared_mem_size,CHAN_ENC_shared_mem_key_file);
+        int CHAN_ENC_mem_id=get_memory_id_from_file(CHAN_ENC_shared_mem_key_file,CHAN_ENC_shared_mem_size);
+        char* mem_CHAN_ENC = (char*) shmat(CHAN_ENC_mem_id, NULL, 0);
+        if(mem_CHAN_ENC==(void*)-1)die("shared memory main");
+        #if DEBUG >= 2
+            printf ("!! shared mem_CHAN_ENC attached at main and initialized !!\n");
+        #endif
+
+        //Shared_memory for ENC-> P
+        generate_memory_segment(ENC_P2_shared_mem_key,ENC_P2_shared_mem_size,ENC_P2_shared_mem_key_file);
+        int ENC_P_mem_id=get_memory_id_from_file(ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size);
+        char* mem_ENC_P = (char*) shmat(ENC_P_mem_id, NULL, 0);
+        if(mem_ENC_P==(void*)-1)die("shared memory main");
+        #if DEBUG >= 2
+            printf ("!! shared mem_ENC_P attached at main and initialized !!\n");
+        #endif
+
+
+
+    //~~~~~~~~~~~~~~~~Semaphore~~~~~~~~~~~~~~~~~~~~~~~~~//
+        int sem_P_p1=generate_semaphore(P_semaphore_p1_key,P_semaphore_p2_key_file);
+        initialise_semaphore(sem_P_p1);
+        int sem_P_p2=generate_semaphore(P_semaphore_p2_key, P_semaphore_p1_key_file);
+        initialise_semaphore(sem_P_p2);
+
+        int sem_ENC_p1=generate_semaphore(ENC_semaphore_p1_key, ENC_semaphore_p1_key_file);
+        initialise_semaphore(sem_ENC_p1);
+        int sem_ENC_p2=generate_semaphore(ENC_semaphore_p2_key, ENC_semaphore_p2_key_file);
+        initialise_semaphore(sem_ENC_p2);
+
+        int sem_CHAN_p1=generate_semaphore(CHAN_semaphore_p1_key, CHAN_semaphore_p1_key_file);
+        initialise_semaphore(sem_CHAN_p1);
+        int sem_CHAN_p2=generate_semaphore(CHAN_semaphore_p2_key, CHAN_semaphore_p2_key_file);
+        initialise_semaphore(sem_CHAN_p2);
+
+        int sem_ENC2_p1=generate_semaphore(ENC2_semaphore_p1_key, ENC2_semaphore_p1_key_file);
+        initialise_semaphore(sem_ENC2_p1);
+        int sem_ENC2_p2=generate_semaphore(ENC2_semaphore_p2_key, ENC2_semaphore_p2_key_file);
+        initialise_semaphore(sem_ENC2_p2);
+
+        int sem_P2_p1=generate_semaphore(P2_semaphore_p1_key,P2_semaphore_p2_key_file);
+        initialise_semaphore(sem_P2_p1);
+        int sem_P2_p2=generate_semaphore(P2_semaphore_p2_key, P2_semaphore_p1_key_file);
+        initialise_semaphore(sem_P2_p2);
+
+}
 
 void die(char er[1000]){//for handling errors
     int fd = open("error.txt", O_WRONLY | O_TRUNC | O_EXCL | O_CREAT, 0644);
