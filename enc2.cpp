@@ -16,6 +16,10 @@ int main(int argc, char const *argv[]){
         #endif
     semaphore_wait(sem_read_id);
     ENC(ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,CHAN_ENC_shared_mem_key_file,CHAN_ENC_shared_mem_size_file,CHAN_semaphore_p1_key_file,ENC2_semaphore_p1_key_file);
+    int sem_chan_id = get_semaphore_id_from_file(CHAN_semaphore_p2_key_file);
+    semaphore_signal(sem_chan_id);
+    printf("~ chan %d releasing %d\n", getpid(),sem_chan_id);
+
 }
     return 0;
 }

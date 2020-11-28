@@ -13,9 +13,11 @@ int main(int argc, char const *argv[]) {
             printf("~CHAN %d waiting message back ,%d\n", getpid(),sem_read_id);
     #endif
     semaphore_wait(sem_read_id);
-    
-    CHAN(CHAN_ENC_shared_mem_key_file,CHAN_ENC_shared_mem_size_file,ENC_CHAN_shared_mem_key_file,ENC_CHAN_shared_mem_size_file,CHAN_semaphore_p1_key_file,ENC2_semaphore_p1_key_file);
 
+    CHAN(CHAN_ENC_shared_mem_key_file,CHAN_ENC_shared_mem_size_file,ENC_CHAN_shared_mem_key_file,ENC_CHAN_shared_mem_size_file,ENC_semaphore_p1_key_file,CHAN_semaphore_p1_key_file);
+    int sem_enc_id = get_semaphore_id_from_file(ENC_semaphore_p2_key_file);
+    semaphore_signal(sem_enc_id);
+    printf("~ enc1 %d releasing %d\n", getpid(),sem_enc_id);
 }
     return 0;
 }

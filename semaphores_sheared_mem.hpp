@@ -255,9 +255,9 @@ void initialized_all_shared_memmory_semaphores(){
 
 
     //~~~~~~~~~~~~~~~~Semaphore~~~~~~~~~~~~~~~~~~~~~~~~~//
-        int sem_P_p1=generate_semaphore(P_semaphore_p1_key,P_semaphore_p2_key_file);
+        int sem_P_p1=generate_semaphore(P_semaphore_p1_key,P_semaphore_p1_key_file);
         initialise_semaphore(sem_P_p1);
-        int sem_P_p2=generate_semaphore(P_semaphore_p2_key, P_semaphore_p1_key_file);
+        int sem_P_p2=generate_semaphore(P_semaphore_p2_key, P_semaphore_p2_key_file);
         initialise_semaphore(sem_P_p2);
 
         int sem_ENC_p1=generate_semaphore(ENC_semaphore_p1_key, ENC_semaphore_p1_key_file);
@@ -300,7 +300,7 @@ void releasing_all(){
     printf("~ enc1 %d releasing %d\n", getpid(),sem_enc_id);
 
     semaphore_signal(sem_p_id);
-    printf("~ p %d releasing %d\n", getpid(),sem_chan_id);
+    printf("~ p %d releasing %d\n", getpid(),sem_p_id);
 
 }
 

@@ -17,7 +17,9 @@ int main(int argc, char const *argv[]) {
     {
 
     P(ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,ENC2_semaphore_p1_key_file,P2_semaphore_p1_key_file);
-    releasing_all();
+    int sem_enc2_id = get_semaphore_id_from_file(ENC2_semaphore_p2_key_file);
+    semaphore_signal(sem_enc2_id);
+    printf("~ enc2 %d releasing %d\n", getpid(),sem_enc2_id);
 }
 
 

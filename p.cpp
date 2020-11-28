@@ -46,7 +46,7 @@ int main(int argc, char const *argv[]) {
             printf("~P %d waiting message back ,%d\n", getpid(),sem_read_id);
         #endif
         semaphore_wait(sem_read_id);
-        P(P_ENC_shared_mem_key_file,P_ENC_shared_mem_size_file,P_shared_mem_key_file,P_shared_mem_size_file,P_semaphore_p1_key_file,ENC_semaphore_p1_key_file);
+        P(P_ENC_shared_mem_key_file,P_ENC_shared_mem_size_file,P_shared_mem_key_file,P_shared_mem_size_file,P_semaphore_p1_key_file,P_semaphore_p1_key_file);
 
     }
 
