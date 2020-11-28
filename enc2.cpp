@@ -7,7 +7,7 @@ int ENC(char* read_shared_mem_key_file,int recive_shared_mem_size_file,char* wri
 
 int main(int argc, char const *argv[]){
     //cout << endl << CHAN_semaphore_p1_key_file << " "<< ENC2_semaphore_p1_key_file <<endl;
-    {
+    while(1){
     ENC(CHAN_ENC_shared_mem_key_file,CHAN_ENC_shared_mem_size_file,ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,P2_semaphore_p1_key_file,ENC2_semaphore_p1_key_file);
     cout<<"\n\n\n\n\n\n";
     int sem_read_id = get_semaphore_id_from_file(ENC2_semaphore_p2_key_file);

@@ -6,7 +6,7 @@ using namespace std;
 int ENC(char* read_shared_mem_key_file,int recive_shared_mem_size_file,char* write_shared_mem_key_file,int write_shared_mem_size_file,char* write_semaphore,char* read_semaphore);
 
 int main(int argc, char const *argv[]){
- {
+    while(1){
     ENC(P_ENC_shared_mem_key_file,P_ENC_shared_mem_size_file,ENC_CHAN_shared_mem_key_file,ENC_CHAN_shared_mem_size_file,CHAN_semaphore_p1_key_file,ENC_semaphore_p1_key_file);
     cout<<"\n\n\n\n\n\n";
     int sem_read_id = get_semaphore_id_from_file(ENC_semaphore_p2_key_file);
@@ -18,7 +18,7 @@ int main(int argc, char const *argv[]){
     int sem_p_id  = get_semaphore_id_from_file(P_semaphore_p2_key_file);
     semaphore_signal(sem_p_id);
     printf("~ p %d releasing %d\n", getpid(),sem_p_id);
-}
+    }
     return 0;
 }
 

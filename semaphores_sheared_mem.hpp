@@ -11,9 +11,12 @@
 #define CHAN_ENC_shared_mem_size_file sizeof(message*)
 #define ENC_P2_shared_mem_key_file "key/ENC-P-shared.mem.key"
 #define ENC_P2_shared_mem_size_file sizeof(message*)
+#define P2_shared_mem_key_file "key/P2-shared.mem.key"
+#define P2_shared_mem_size_file sizeof(message*)
 
 #define P_semaphore_p1_key_file "key/p_p1.semaphore.key"
 #define P_semaphore_p2_key_file "key/p_p2.semaphore.key"
+#define P_semaphore_p3_key_file "key/p_p3.semaphore.key"
 #define ENC_semaphore_p1_key_file "key/enc_p1.semaphore.key"
 #define ENC_semaphore_p2_key_file "key/enc_p2.semaphore.key"
 #define CHAN_semaphore_p1_key_file "key/CHAN_p1.semaphore.key"
@@ -22,6 +25,7 @@
 #define ENC2_semaphore_p2_key_file "key/encc_p2.semaphore.key"
 #define P2_semaphore_p1_key_file "key/p2_p1.semaphore.key"
 #define P2_semaphore_p2_key_file "key/p2_p2.semaphore.key"
+#define P2_semaphore_p3_key_file "key/p2_p3.semaphore.key"
 
 
 #include "helping_functions.hpp"
@@ -194,17 +198,22 @@ void initialized_all_shared_memmory_semaphores(){
         key_t ENC_P2_shared_mem_size =ftok("p.o",8);
         key_t P_shared_mem_key =ftok("p.o",9);
         key_t P_shared_mem_size =ftok("p.o",10);
+        key_t P2_shared_mem_key =ftok("p.o",11);
+        key_t P2_shared_mem_size =ftok("p.o",12);
 
-        key_t P_semaphore_p1_key =ftok("p.o",11);
-        key_t P_semaphore_p2_key =ftok("p.o",12);
-        key_t ENC_semaphore_p1_key =ftok("p.o",13);
-        key_t ENC_semaphore_p2_key =ftok("p.o",14);
-        key_t CHAN_semaphore_p1_key =ftok("p.o",15);
-        key_t CHAN_semaphore_p2_key =ftok("p.o",16);
-        key_t ENC2_semaphore_p1_key=ftok("p.o",17);
-        key_t ENC2_semaphore_p2_key =ftok("p.o",18);
-        key_t P2_semaphore_p1_key =ftok("p.o",19);
-        key_t P2_semaphore_p2_key =ftok("p.o",20);
+        key_t P_semaphore_p1_key =ftok("p.o",13);
+        key_t P_semaphore_p2_key =ftok("p.o",14);
+        key_t P_semaphore_p3_key =ftok("p.o",15);
+        key_t ENC_semaphore_p1_key =ftok("p.o",16);
+        key_t ENC_semaphore_p2_key =ftok("p.o",17);
+        key_t CHAN_semaphore_p1_key =ftok("p.o",18);
+        key_t CHAN_semaphore_p2_key =ftok("p.o",19);
+        key_t ENC2_semaphore_p1_key=ftok("p.o",20);
+        key_t ENC2_semaphore_p2_key =ftok("p.o",21);
+        key_t P2_semaphore_p1_key =ftok("p.o",22);
+        key_t P2_semaphore_p2_key =ftok("p.o",23);
+        key_t P2_semaphore_p3_key =ftok("p.o",24);
+
 
     //~~~~~~~~~~~~~~~~Shared_memory~~~~~~~~~~~~~~~~~~~~~~//
         //Shared_memory for P
@@ -252,6 +261,14 @@ void initialized_all_shared_memmory_semaphores(){
             printf ("!! shared mem_ENC_P attached at main and initialized !!\n");
         #endif
 
+        //Shared_memory for P2
+        generate_memory_segment(P2_shared_mem_key,P2_shared_mem_size,P2_shared_mem_key_file);
+        int P2_mem_id=get_memory_id_from_file(P2_shared_mem_key_file,P2_shared_mem_size);
+        char* mem_P2 = (char*) shmat(P2_mem_id, NULL, 0);
+        if(mem_P==(void*)-1)die("shared memory main");
+        #if DEBUG >= 2
+            printf ("!! shared mem_P attached at main and initialized !!\n");
+        #endif
 
 
     //~~~~~~~~~~~~~~~~Semaphore~~~~~~~~~~~~~~~~~~~~~~~~~//
@@ -259,6 +276,8 @@ void initialized_all_shared_memmory_semaphores(){
         initialise_semaphore(sem_P_p1);
         int sem_P_p2=generate_semaphore(P_semaphore_p2_key, P_semaphore_p2_key_file);
         initialise_semaphore(sem_P_p2);
+        int sem_P_p3=generate_semaphore(P_semaphore_p3_key, P_semaphore_p3_key_file);
+        initialise_semaphore(sem_P_p3);
 
         int sem_ENC_p1=generate_semaphore(ENC_semaphore_p1_key, ENC_semaphore_p1_key_file);
         initialise_semaphore(sem_ENC_p1);
@@ -279,6 +298,8 @@ void initialized_all_shared_memmory_semaphores(){
         initialise_semaphore(sem_P2_p1);
         int sem_P2_p2=generate_semaphore(P2_semaphore_p2_key, P2_semaphore_p1_key_file);
         initialise_semaphore(sem_P2_p2);
+        int sem_P2_p3=generate_semaphore(P2_semaphore_p3_key, P2_semaphore_p3_key_file);
+        initialise_semaphore(sem_P2_p3);
 
 }
 

@@ -4,8 +4,8 @@
 int CHAN(char* read_shared_mem_key_file, int read_shared_mem_size_file,char* write_shared_mem_key_file, int write_shared_mem_size_file,char* write_semaphore,char* read_semaphore);
 
 int main(int argc, char const *argv[]) {
-    {
 
+    while(1){
     CHAN(ENC_CHAN_shared_mem_key_file,ENC_CHAN_shared_mem_size_file,CHAN_ENC_shared_mem_key_file,CHAN_ENC_shared_mem_size_file,ENC2_semaphore_p1_key_file,CHAN_semaphore_p1_key_file);
     cout<<"\n\n\n\n\n\n";
     int sem_read_id = get_semaphore_id_from_file(CHAN_semaphore_p2_key_file);
@@ -56,7 +56,7 @@ int CHAN(char* read_shared_mem_key_file, int read_shared_mem_size_file,char* wri
     #endif
 
     //~~~~~~~~~~~~~~~CHANGE ON CHANEL~~~~~~~~~~~~~~~~//
-        strcpy(mess->message_arrey,"aaaaa");
+        //strcpy(mess->message_arrey,"aaaaa");
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 

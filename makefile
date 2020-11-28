@@ -27,7 +27,7 @@ HEADER4	= helping_function.h md5/md5.h
 OUT4	= p2
 
 CC	 = g++
-FLAGS	 = -g -c -Wall
+FLAGS	 = -g -c -Wall -g3
 LFLAGS	 =
 
 all: chan enc p enc2 p2
