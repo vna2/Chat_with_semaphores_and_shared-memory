@@ -16,8 +16,8 @@ int main(int argc, char const *argv[]) {
     strcpy(temp[3], "hola bitch3");
     {
 
-    P(ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,ENC2_semaphore_p2_key_file,P2_semaphore_p1_key_file);
-
+    P(ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,ENC2_semaphore_p1_key_file,P2_semaphore_p1_key_file);
+    releasing_all();
 }
 
 
@@ -32,7 +32,7 @@ int P(char* read_shared_mem_key_file,int read_shared_mem_size_file,char* write_s
     int sem_write_id = get_semaphore_id_from_file(write_semaphore);
 
     #if DEBUG >= 1
-        printf("~ read P %d waiting\n", getpid());
+        printf("~ENC %d waiting ,%d\n", getpid(),sem_read_id);
     #endif
     semaphore_wait(sem_read_id);
 
@@ -64,9 +64,7 @@ int P(char* read_shared_mem_key_file,int read_shared_mem_size_file,char* write_s
 
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~WRITE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-    #if DEBUG >= 1
-        //printf("~ read P->ENC %d waiting\n", getpid());
-    #endif
+
 
     strcpy(shared_memory_write->message_arrey,shared_memory_read->message_arrey);
     shared_memory_write->flag_checksum=mess->flag_checksum;
@@ -87,7 +85,7 @@ int P(char* read_shared_mem_key_file,int read_shared_mem_size_file,char* write_s
 
     semaphore_signal(sem_write_id);
     #if DEBUG >= 1
-    printf("~ write P %d releasing\n", getpid());
+    printf("~ write P %d releasing %d\n", getpid(),sem_write_id);
     #endif
 
     return 0;

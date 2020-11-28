@@ -9,8 +9,12 @@ int main(int argc, char const *argv[]){
  {
     ENC(P_ENC_shared_mem_key_file,P_ENC_shared_mem_size_file,ENC_CHAN_shared_mem_key_file,ENC_CHAN_shared_mem_size_file,CHAN_semaphore_p1_key_file,ENC_semaphore_p1_key_file);
     cout<<"\n\n\n\n\n\n";
-
-    ENC(ENC_CHAN_shared_mem_key_file,ENC_CHAN_shared_mem_size_file,P_ENC_shared_mem_key_file,P_ENC_shared_mem_size_file,ENC_semaphore_p2_key_file,CHAN_semaphore_p2_key_file);
+    int sem_read_id = get_semaphore_id_from_file(ENC_semaphore_p2_key_file);
+    #if DEBUG >= 1
+        printf("~ENC %d waiting message back ,%d\n", getpid(),sem_read_id);
+    #endif
+    semaphore_wait(sem_read_id);
+    ENC(ENC_CHAN_shared_mem_key_file,ENC_CHAN_shared_mem_size_file,P_ENC_shared_mem_key_file,P_ENC_shared_mem_size_file,ENC_semaphore_p1_key_file,CHAN_semaphore_p1_key_file);
 
 }
     return 0;
@@ -26,7 +30,7 @@ int ENC(char* read_shared_mem_key_file,int read_shared_mem_size_file,char* write
     int sem_write_id  = get_semaphore_id_from_file(write_semaphore);
 
     #if DEBUG >= 1
-    printf("~ENC %d waiting\n", getpid());
+    printf("~ENC %d waiting ,%d\n", getpid(),sem_read_id);
     #endif
     semaphore_wait(sem_read_id);
 
@@ -99,7 +103,7 @@ int ENC(char* read_shared_mem_key_file,int read_shared_mem_size_file,char* write
     #endif
     semaphore_signal(sem_write_id);
     #if DEBUG >= 1
-        printf("~ write ENC %d releasing\n", getpid());
+        printf("~ write ENC %d releasing %d\n", getpid(),sem_write_id);
     #endif
     //if
     return resend_flag;

@@ -28,7 +28,6 @@
 void die(char er[1000]);
 
 
-
 int generate_memory_segment(key_t mem_key, size_t mem_sz, char* file_name){
     int mem_seg_id,mem_fd;
     /* Allocate a shared memory id. */
@@ -283,6 +282,28 @@ void initialized_all_shared_memmory_semaphores(){
 
 }
 
+
+void releasing_all(){
+    int sem_p_id  = get_semaphore_id_from_file(P_semaphore_p2_key_file);
+    int sem_enc_id = get_semaphore_id_from_file(ENC_semaphore_p2_key_file);
+    int sem_chan_id  = get_semaphore_id_from_file(CHAN_semaphore_p2_key_file);
+    int sem_enc2_id = get_semaphore_id_from_file(ENC2_semaphore_p2_key_file);
+    //int sem_p2_id  = get_semaphore_id_from_file(P2_semaphore_p2_key_file);
+    printf("relising all \n");
+    semaphore_signal(sem_enc2_id);
+    printf("~ enc2 %d releasing %d\n", getpid(),sem_enc2_id);
+
+    semaphore_signal(sem_chan_id);
+    printf("~ chan %d releasing %d\n", getpid(),sem_chan_id);
+
+    semaphore_signal(sem_enc_id);
+    printf("~ enc1 %d releasing %d\n", getpid(),sem_enc_id);
+
+    semaphore_signal(sem_p_id);
+    printf("~ p %d releasing %d\n", getpid(),sem_chan_id);
+
+}
+
 void die(char er[1000]){//for handling errors
     int fd = open("error.txt", O_WRONLY | O_TRUNC | O_EXCL | O_CREAT, 0644);
     write(fd, er, strlen(er));
@@ -290,5 +311,7 @@ void die(char er[1000]){//for handling errors
     perror(er);
     exit(1);
 }
+
+
 
 #endif

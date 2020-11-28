@@ -8,11 +8,14 @@ int ENC(char* read_shared_mem_key_file,int recive_shared_mem_size_file,char* wri
 int main(int argc, char const *argv[]){
     //cout << endl << CHAN_semaphore_p1_key_file << " "<< ENC2_semaphore_p1_key_file <<endl;
     {
-
     ENC(CHAN_ENC_shared_mem_key_file,CHAN_ENC_shared_mem_size_file,ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,P2_semaphore_p1_key_file,ENC2_semaphore_p1_key_file);
     cout<<"\n\n\n\n\n\n";
-
-    ENC(ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,CHAN_ENC_shared_mem_key_file,CHAN_ENC_shared_mem_size_file,ENC2_semaphore_p2_key_file,P2_semaphore_p1_key_file);
+    int sem_read_id = get_semaphore_id_from_file(ENC2_semaphore_p2_key_file);
+    #if DEBUG >= 1
+            printf("~ENC2 %d waiting message back ,%d\n", getpid(),sem_read_id);
+        #endif
+    semaphore_wait(sem_read_id);
+    ENC(ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,CHAN_ENC_shared_mem_key_file,CHAN_ENC_shared_mem_size_file,CHAN_semaphore_p1_key_file,ENC2_semaphore_p1_key_file);
 }
     return 0;
 }
@@ -28,7 +31,7 @@ int ENC(char* read_shared_mem_key_file,int read_shared_mem_size_file,char* write
     cout << endl<< read_semaphore <<endl;
 
     #if DEBUG >= 1
-    printf("~ENC %d waiting\n", getpid());
+    printf("~ENC %d waiting ,%d\n", getpid(),sem_read_id);
     #endif
     semaphore_wait(sem_read_id);
 
@@ -101,7 +104,7 @@ int ENC(char* read_shared_mem_key_file,int read_shared_mem_size_file,char* write
     #endif
     semaphore_signal(sem_write_id);
     #if DEBUG >= 1
-        printf("~ write ENC %d releasing\n", getpid());
+        printf("~ write ENC %d releasing %d\n", getpid(),sem_write_id);
     #endif
     //if
     return resend_flag;
