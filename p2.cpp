@@ -67,6 +67,8 @@ int main(int argc, char const *argv[]) {
         semaphore_wait(sem_ENC2_p2_id);
         P(ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,ENC2_semaphore_p1_key_file,P2_semaphore_p1_key_file);
 
+        cout<<"\n\n\n\n\n\n";
+        cout<<"\n\n\n\n\n\n";
 
     }
 

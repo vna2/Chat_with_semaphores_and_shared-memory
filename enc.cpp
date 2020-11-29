@@ -13,7 +13,7 @@ int main(int argc, char const *argv[]){
     int sem_CHAN_p2_id = get_semaphore_id_from_file(CHAN_semaphore_p2_key_file);
 
 
-    while(1){
+    for (size_t i = 0; i <3; i++){
     ENC(P_ENC_shared_mem_key_file,P_ENC_shared_mem_size_file,ENC_CHAN_shared_mem_key_file,ENC_CHAN_shared_mem_size_file,CHAN_semaphore_p1_key_file,ENC_semaphore_p1_key_file);
     cout<<"\n\n\n\n\n\n";
     #if DEBUG >= 1
@@ -50,7 +50,8 @@ int main(int argc, char const *argv[]){
     #if DEBUG >= 1
         printf("~ CHAN %d releasing p2 %d\n", getpid(),sem_CHAN_p2_id);
     #endif
-    
+    cout<<"\n\n\n\n\n\n";
+    cout<<"\n\n\n\n\n\n";
     }
     return 0;
 }

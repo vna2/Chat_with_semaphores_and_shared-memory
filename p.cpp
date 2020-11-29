@@ -67,7 +67,8 @@ int main(int argc, char const *argv[]) {
         #if DEBUG >= 1
             printf("~ P %d releasing %d\n", getpid(),sem_ENC_p2_id);
         #endif
-
+        cout<<"\n\n\n\n\n\n";
+        cout<<"\n\n\n\n\n\n";
         // printf("~P %d Message send succesfuly releas p2 semaphore,%d\n", getpid(),sem_p2_p3_id);
         //P(P_shared_mem_key_file,P_shared_mem_size_file,P_ENC_shared_mem_key_file,P_ENC_shared_mem_size_file ,ENC_semaphore_p1_key_file,P_semaphore_p1_key_file);
 
