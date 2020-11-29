@@ -50,10 +50,6 @@ int main(int argc, char const *argv[]) {
     #if DEBUG >= 1
         printf("~ ENC2 %d releasing p2 %d\n", getpid(),sem_ENC2_p2_id);
     #endif
-    semaphore_signal(sem_ENC2_p2_id);
-    #if DEBUG >= 1
-        printf("~ ENC2 %d releasing p2 %d\n", getpid(),sem_ENC2_p2_id);
-    #endif
 
 
     cout<<"\n\n\n\n\n\n";
