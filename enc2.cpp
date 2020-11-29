@@ -14,14 +14,27 @@ int main(int argc, char const *argv[]){
     int sem_CHAN_p3_id = get_semaphore_id_from_file(CHAN_semaphore_p3_key_file);
     int sem_p2_p2_id = get_semaphore_id_from_file(P2_semaphore_p2_key_file);
 
+    int flag=0;
 
 
-
-    for (size_t i = 0; i <8; i++){
+    while(1){
+        cout<<"\n\n\n\n\n\n";
+        cout<<"\n\n\n\n\n\n";
     #if DEBUG >= 1
         cout << "THIS IS P1 MESSAGE";
     #endif
+    #if DEBUG >= 1
+        printf("~ENC2 %d CHAN ,%d\n", getpid(),sem_ENC2_p2_id);
+    #endif
+    semaphore_wait(sem_ENC2_p2_id);
     ENC(CHAN_ENC_shared_mem_key_file,CHAN_ENC_shared_mem_size_file,ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,P2_semaphore_p1_key_file,ENC2_semaphore_p1_key_file);
+    if(flag==1){
+    semaphore_signal(sem_p2_p2_id);
+    #if DEBUG >= 1
+        printf("~ CHAN %d releasing p2 %d\n", getpid(),sem_p2_p2_id);
+    #endif
+
+    }
     cout<<"\n\n\n\n\n\n";
     #if DEBUG >= 1
         printf("~ENC2 %d waiting message back p2 %d\n", getpid(),sem_ENC2_p2_id);
@@ -61,6 +74,7 @@ int main(int argc, char const *argv[]){
 
     cout<<"\n\n\n\n\n\n";
     cout<<"\n\n\n\n\n\n";
+    flag=1;
     }
     return 0;
 }

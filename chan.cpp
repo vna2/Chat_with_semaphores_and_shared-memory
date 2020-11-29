@@ -16,7 +16,20 @@ int main(int argc, char const *argv[]) {
 
 
     while(1){
+        cout<<"\n\n\n\n\n\n";
+        cout<<"\n\n\n\n\n\n";
+    #if DEBUG >= 1
+        cout << "THIS IS P1 MESSAGE\n";
+    #endif
+    #if DEBUG >= 1
+        printf("~CHAN %d waiting enc ,%d\n", getpid(),sem_CHAN_p2_id);
+    #endif
+    semaphore_wait(sem_CHAN_p2_id);
     CHAN(ENC_CHAN_shared_mem_key_file,ENC_CHAN_shared_mem_size_file,CHAN_ENC_shared_mem_key_file,CHAN_ENC_shared_mem_size_file,ENC2_semaphore_p1_key_file,CHAN_semaphore_p1_key_file);
+    #if DEBUG >= 1
+        printf("~ %d releasing enc2 p2 %d\n", getpid(),sem_ENC2_p2_id);
+    #endif
+    semaphore_signal(sem_ENC2_p2_id);
     cout<<"\n\n\n\n\n\n";
     #if DEBUG >= 1
             printf("~CHAN %d waiting message back ,%d\n", getpid(),sem_CHAN_p2_id);

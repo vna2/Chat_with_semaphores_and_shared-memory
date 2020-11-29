@@ -37,11 +37,13 @@ int main(int argc, char const *argv[]) {
     #endif
     semaphore_wait(sem_p2_p4_id);
     for (size_t i = 0; i <3; i++) {
-        cout<<"\n\n\n\n\n\n";
-        cout<<"\n\n\n\n\n\n";
+
         #if DEBUG >= 1
             cout << "THIS IS P2 MESSAGE\n";
         #endif
+
+
+
         int mem_seg_id=get_memory_id_from_file(P2_shared_mem_key_file,P2_shared_mem_size_file);
         message* shared_memory = (message*) shmat(mem_seg_id, NULL, 0);
         if(shared_memory==(void*)-1)die("shared memory P");
@@ -69,12 +71,32 @@ int main(int argc, char const *argv[]) {
         #endif
         semaphore_wait(sem_p2_p2_id);
         P(ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,ENC2_semaphore_p1_key_file,P2_semaphore_p1_key_file);
-        cout<<"\n\n\n\n\n\n";
-        cout<<"\n\n\n\n\n\n";
         #if DEBUG >= 1
-            printf("~ P2 %d releasing for statring p2 send message p4 %d\n", getpid(),sem_p1_p4_id);
+            printf("~ P2 %d releasing p2 %d\n", getpid(),sem_ENC2_p2_id);
+        #endif
+        semaphore_signal(sem_ENC2_p2_id);
+
+        // #if DEBUG >= 1
+        //     printf("~P %d waiting enc2 p4 %d\n", getpid(),sem_p2_p2_id);
+        // #endif
+        // semaphore_wait(sem_p2_p2_id);
+        // P(ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,ENC2_semaphore_p1_key_file,P2_semaphore_p1_key_file);
+        #if DEBUG >= 1
+        printf("~ P2 %d releasing for statring P1 send message p4 %d\n", getpid(),sem_p1_p4_id);
         #endif
         semaphore_signal(sem_p1_p4_id);
+        #if DEBUG >= 1
+            printf("~P2 %d waiting ENC2 ,%d\n", getpid(),sem_p2_p2_id);
+        #endif
+        semaphore_wait(sem_p2_p2_id);
+        P(ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,ENC2_semaphore_p1_key_file,P2_semaphore_p1_key_file);
+
+        #if DEBUG >= 1
+        printf("~P %d waiting from P1 to start sending message %d\n", getpid(),sem_p2_p4_id);
+        #endif
+        semaphore_wait(sem_p2_p4_id);
+        cout<<"\n\n\n\n\n\n";
+        cout<<"\n\n\n\n\n\n";
 
     }
 

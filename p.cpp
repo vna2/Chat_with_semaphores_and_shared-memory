@@ -26,9 +26,11 @@ int main(int argc, char const *argv[]) {
     int sem_p_p4_id = get_semaphore_id_from_file(P_semaphore_p4_key_file);
     int sem_p2_p4_id = get_semaphore_id_from_file(P2_semaphore_p4_key_file);
     int sem_ENC_p4_id = get_semaphore_id_from_file(ENC_semaphore_p4_key_file);
+    int sem_ENC_p2_id = get_semaphore_id_from_file(ENC_semaphore_p2_key_file);
 
     for (size_t i = 0; i <3; i++) {
         cout << "THIS IS P1 MESSAGE \n";
+        
         int mem_seg_id=get_memory_id_from_file(P_shared_mem_key_file,P_shared_mem_size_file);
         message* shared_memory = (message*) shmat(mem_seg_id, NULL, 0);
         if(shared_memory==(void*)-1)die("shared memory P");
@@ -47,6 +49,10 @@ int main(int argc, char const *argv[]) {
             printf("~ P %d releasing %d\n", getpid(),sem_p_p1_id);
         #endif
         P(P_shared_mem_key_file,P_shared_mem_size_file,P_ENC_shared_mem_key_file,P_ENC_shared_mem_size_file ,ENC_semaphore_p1_key_file,P_semaphore_p1_key_file);
+        #if DEBUG >= 1
+            printf("~ %d releasing ENC p2 %d\n", getpid(),sem_ENC_p2_id);
+        #endif
+        semaphore_signal(sem_ENC_p2_id);
         cout<<"\n\n\n\n\n\n";
         #if DEBUG >= 1
             printf("~P %d waiting message back ,%d\n", getpid(),sem_p_p2_id);
