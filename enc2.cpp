@@ -7,20 +7,51 @@ int ENC(char* read_shared_mem_key_file,int recive_shared_mem_size_file,char* wri
 
 int main(int argc, char const *argv[]){
     //cout << endl << CHAN_semaphore_p1_key_file << " "<< ENC2_semaphore_p1_key_file <<endl;
+    int sem_ENC2_p2_id = get_semaphore_id_from_file(ENC2_semaphore_p2_key_file);
+    int sem_CHAN_p2_id = get_semaphore_id_from_file(CHAN_semaphore_p2_key_file);
+    int sem_ENC2_p3_id = get_semaphore_id_from_file(ENC2_semaphore_p3_key_file);
+    int sem_CHAN_p3_id = get_semaphore_id_from_file(CHAN_semaphore_p3_key_file);
+
+
+
     while(1){
+    #if DEBUG >= 1
+        cout << "THIS IS P1 MESSAGE";
+    #endif
     ENC(CHAN_ENC_shared_mem_key_file,CHAN_ENC_shared_mem_size_file,ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,P2_semaphore_p1_key_file,ENC2_semaphore_p1_key_file);
     cout<<"\n\n\n\n\n\n";
-    int sem_read_id = get_semaphore_id_from_file(ENC2_semaphore_p2_key_file);
     #if DEBUG >= 1
-            printf("~ENC2 %d waiting message back ,%d\n", getpid(),sem_read_id);
-        #endif
-    semaphore_wait(sem_read_id);
+        printf("~ENC2 %d waiting message back p2 %d\n", getpid(),sem_ENC2_p2_id);
+    #endif
+    semaphore_wait(sem_ENC2_p2_id);
     ENC(ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,CHAN_ENC_shared_mem_key_file,CHAN_ENC_shared_mem_size_file,CHAN_semaphore_p1_key_file,ENC2_semaphore_p1_key_file);
-    int sem_chan_id = get_semaphore_id_from_file(CHAN_semaphore_p2_key_file);
-    semaphore_signal(sem_chan_id);
-    printf("~ chan %d releasing %d\n", getpid(),sem_chan_id);
+    semaphore_signal(sem_CHAN_p2_id);
+    #if DEBUG >= 1
+        printf("~ CHAN %d releasing p2 %d\n", getpid(),sem_CHAN_p2_id);
+    #endif
 
-}
+
+    cout<<"\n\n\n\n\n\n";
+    cout<<"\n\n\n\n\n\n";
+    #if DEBUG >= 1
+        cout << "THIS IS P2 MESSAGE\n";
+    #endif
+    #if DEBUG >= 1
+        printf("~ENC2 %d waiting p3 %d\n", getpid(),sem_ENC2_p3_id);
+    #endif
+    semaphore_wait(sem_ENC2_p3_id);
+    ENC(ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,CHAN_ENC_shared_mem_key_file,CHAN_ENC_shared_mem_size_file,CHAN_semaphore_p1_key_file,ENC2_semaphore_p1_key_file);
+    semaphore_signal(sem_CHAN_p3_id);
+    #if DEBUG >= 1
+        printf("~ CHAN %d releasing p3 %d\n", getpid(),sem_CHAN_p3_id);
+    #endif
+    // #if DEBUG >= 1
+    //     printf("~ENC2 %d waiting message back ,%d\n", getpid(),sem_ENC2_p2_id);
+    // #endif
+    // semaphore_wait(sem_ENC2_p2_id);
+
+
+    }
     return 0;
 }
 

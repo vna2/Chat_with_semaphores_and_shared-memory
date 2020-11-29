@@ -17,15 +17,21 @@
 #define P_semaphore_p1_key_file "key/p_p1.semaphore.key"
 #define P_semaphore_p2_key_file "key/p_p2.semaphore.key"
 #define P_semaphore_p3_key_file "key/p_p3.semaphore.key"
+#define P_semaphore_p4_key_file "key/p_p4.semaphore.key"
 #define ENC_semaphore_p1_key_file "key/enc_p1.semaphore.key"
 #define ENC_semaphore_p2_key_file "key/enc_p2.semaphore.key"
+#define ENC_semaphore_p3_key_file "key/enc_p3.semaphore.key"
 #define CHAN_semaphore_p1_key_file "key/CHAN_p1.semaphore.key"
 #define CHAN_semaphore_p2_key_file "key/CHAN_p2.semaphore.key"
+#define CHAN_semaphore_p3_key_file "key/CHAN_p3.semaphore.key"
 #define ENC2_semaphore_p1_key_file "key/encc_p1.semaphore.key"
 #define ENC2_semaphore_p2_key_file "key/encc_p2.semaphore.key"
+#define ENC2_semaphore_p3_key_file "key/encc_p3.semaphore.key"
 #define P2_semaphore_p1_key_file "key/p2_p1.semaphore.key"
 #define P2_semaphore_p2_key_file "key/p2_p2.semaphore.key"
 #define P2_semaphore_p3_key_file "key/p2_p3.semaphore.key"
+#define P2_semaphore_p4_key_file "key/p2_p4.semaphore.key"
+
 
 
 #include "helping_functions.hpp"
@@ -204,15 +210,21 @@ void initialized_all_shared_memmory_semaphores(){
         key_t P_semaphore_p1_key =ftok("p.o",13);
         key_t P_semaphore_p2_key =ftok("p.o",14);
         key_t P_semaphore_p3_key =ftok("p.o",15);
+        key_t P_semaphore_p4_key =ftok("p.o",29);
         key_t ENC_semaphore_p1_key =ftok("p.o",16);
         key_t ENC_semaphore_p2_key =ftok("p.o",17);
-        key_t CHAN_semaphore_p1_key =ftok("p.o",18);
-        key_t CHAN_semaphore_p2_key =ftok("p.o",19);
-        key_t ENC2_semaphore_p1_key=ftok("p.o",20);
-        key_t ENC2_semaphore_p2_key =ftok("p.o",21);
-        key_t P2_semaphore_p1_key =ftok("p.o",22);
-        key_t P2_semaphore_p2_key =ftok("p.o",23);
-        key_t P2_semaphore_p3_key =ftok("p.o",24);
+        key_t ENC_semaphore_p3_key =ftok("p.o",18);
+        key_t CHAN_semaphore_p1_key =ftok("p.o",19);
+        key_t CHAN_semaphore_p2_key =ftok("p.o",20);
+        key_t CHAN_semaphore_p3_key =ftok("p.o",21);
+        key_t ENC2_semaphore_p1_key=ftok("p.o",22);
+        key_t ENC2_semaphore_p2_key =ftok("p.o",23);
+        key_t ENC2_semaphore_p3_key =ftok("p.o",24);
+        key_t P2_semaphore_p1_key =ftok("p.o",25);
+        key_t P2_semaphore_p2_key =ftok("p.o",26);
+        key_t P2_semaphore_p3_key =ftok("p.o",27);
+        key_t P2_semaphore_p4_key =ftok("p.o",28);
+
 
 
     //~~~~~~~~~~~~~~~~Shared_memory~~~~~~~~~~~~~~~~~~~~~~//
@@ -278,52 +290,43 @@ void initialized_all_shared_memmory_semaphores(){
         initialise_semaphore(sem_P_p2);
         int sem_P_p3=generate_semaphore(P_semaphore_p3_key, P_semaphore_p3_key_file);
         initialise_semaphore(sem_P_p3);
+        int sem_P_p4=generate_semaphore(P_semaphore_p4_key, P_semaphore_p4_key_file);
+        initialise_semaphore(sem_P_p4);
 
         int sem_ENC_p1=generate_semaphore(ENC_semaphore_p1_key, ENC_semaphore_p1_key_file);
         initialise_semaphore(sem_ENC_p1);
         int sem_ENC_p2=generate_semaphore(ENC_semaphore_p2_key, ENC_semaphore_p2_key_file);
         initialise_semaphore(sem_ENC_p2);
+        int sem_ENC_p3=generate_semaphore(ENC_semaphore_p3_key, ENC_semaphore_p3_key_file);
+        initialise_semaphore(sem_ENC_p3);
 
         int sem_CHAN_p1=generate_semaphore(CHAN_semaphore_p1_key, CHAN_semaphore_p1_key_file);
         initialise_semaphore(sem_CHAN_p1);
         int sem_CHAN_p2=generate_semaphore(CHAN_semaphore_p2_key, CHAN_semaphore_p2_key_file);
         initialise_semaphore(sem_CHAN_p2);
+        int sem_CHAN_p3=generate_semaphore(CHAN_semaphore_p3_key, CHAN_semaphore_p3_key_file);
+        initialise_semaphore(sem_CHAN_p3);
 
         int sem_ENC2_p1=generate_semaphore(ENC2_semaphore_p1_key, ENC2_semaphore_p1_key_file);
         initialise_semaphore(sem_ENC2_p1);
         int sem_ENC2_p2=generate_semaphore(ENC2_semaphore_p2_key, ENC2_semaphore_p2_key_file);
         initialise_semaphore(sem_ENC2_p2);
+        int sem_ENC2_p3=generate_semaphore(ENC2_semaphore_p3_key, ENC2_semaphore_p3_key_file);
+        initialise_semaphore(sem_ENC2_p3);
 
-        int sem_P2_p1=generate_semaphore(P2_semaphore_p1_key,P2_semaphore_p2_key_file);
+        int sem_P2_p1=generate_semaphore(P2_semaphore_p1_key,P2_semaphore_p1_key_file);
         initialise_semaphore(sem_P2_p1);
-        int sem_P2_p2=generate_semaphore(P2_semaphore_p2_key, P2_semaphore_p1_key_file);
+        int sem_P2_p2=generate_semaphore(P2_semaphore_p2_key, P2_semaphore_p2_key_file);
         initialise_semaphore(sem_P2_p2);
         int sem_P2_p3=generate_semaphore(P2_semaphore_p3_key, P2_semaphore_p3_key_file);
         initialise_semaphore(sem_P2_p3);
+        int sem_P2_p4=generate_semaphore(P2_semaphore_p4_key, P2_semaphore_p4_key_file);
+        initialise_semaphore(sem_P2_p4);
 
 }
 
 
-void releasing_all(){
-    int sem_p_id  = get_semaphore_id_from_file(P_semaphore_p2_key_file);
-    int sem_enc_id = get_semaphore_id_from_file(ENC_semaphore_p2_key_file);
-    int sem_chan_id  = get_semaphore_id_from_file(CHAN_semaphore_p2_key_file);
-    int sem_enc2_id = get_semaphore_id_from_file(ENC2_semaphore_p2_key_file);
-    //int sem_p2_id  = get_semaphore_id_from_file(P2_semaphore_p2_key_file);
-    printf("relising all \n");
-    semaphore_signal(sem_enc2_id);
-    printf("~ enc2 %d releasing %d\n", getpid(),sem_enc2_id);
 
-    semaphore_signal(sem_chan_id);
-    printf("~ chan %d releasing %d\n", getpid(),sem_chan_id);
-
-    semaphore_signal(sem_enc_id);
-    printf("~ enc1 %d releasing %d\n", getpid(),sem_enc_id);
-
-    semaphore_signal(sem_p_id);
-    printf("~ p %d releasing %d\n", getpid(),sem_p_id);
-
-}
 
 void die(char er[1000]){//for handling errors
     int fd = open("error.txt", O_WRONLY | O_TRUNC | O_EXCL | O_CREAT, 0644);

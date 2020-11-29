@@ -6,18 +6,40 @@ using namespace std;
 int ENC(char* read_shared_mem_key_file,int recive_shared_mem_size_file,char* write_shared_mem_key_file,int write_shared_mem_size_file,char* write_semaphore,char* read_semaphore);
 
 int main(int argc, char const *argv[]){
+    int sem_ENC_p2_id = get_semaphore_id_from_file(ENC_semaphore_p2_key_file);
+    int sem_ENC_p3_id = get_semaphore_id_from_file(ENC_semaphore_p3_key_file);
+    int sem_p_p2_id  = get_semaphore_id_from_file(P_semaphore_p2_key_file);
+    int sem_p_p3_id  = get_semaphore_id_from_file(P_semaphore_p3_key_file);
+
     while(1){
     ENC(P_ENC_shared_mem_key_file,P_ENC_shared_mem_size_file,ENC_CHAN_shared_mem_key_file,ENC_CHAN_shared_mem_size_file,CHAN_semaphore_p1_key_file,ENC_semaphore_p1_key_file);
     cout<<"\n\n\n\n\n\n";
-    int sem_read_id = get_semaphore_id_from_file(ENC_semaphore_p2_key_file);
     #if DEBUG >= 1
-        printf("~ENC %d waiting message back ,%d\n", getpid(),sem_read_id);
+        printf("~ENC %d waiting message back ,%d\n", getpid(),sem_ENC_p2_id);
     #endif
-    semaphore_wait(sem_read_id);
+    semaphore_wait(sem_ENC_p2_id);
     ENC(ENC_CHAN_shared_mem_key_file,ENC_CHAN_shared_mem_size_file,P_ENC_shared_mem_key_file,P_ENC_shared_mem_size_file,P_semaphore_p1_key_file,ENC_semaphore_p1_key_file);
-    int sem_p_id  = get_semaphore_id_from_file(P_semaphore_p2_key_file);
-    semaphore_signal(sem_p_id);
-    printf("~ p %d releasing %d\n", getpid(),sem_p_id);
+    semaphore_signal(sem_p_p2_id);
+    #if DEBUG >= 1
+        printf("~ p %d releasing %d\n", getpid(),sem_p_p2_id);
+    #endif
+
+
+    cout<<"\n\n\n\n\n\n";
+    cout<<"\n\n\n\n\n\n";
+    #if DEBUG >= 1
+        cout << "THIS IS P2 MESSAGE\n";
+    #endif
+    #if DEBUG >= 1
+        printf("~ENC1 %d waiting p3 %d\n", getpid(),sem_ENC_p3_id);
+    #endif
+    semaphore_wait(sem_ENC_p3_id);
+    ENC(ENC_CHAN_shared_mem_key_file,ENC_CHAN_shared_mem_size_file,P_ENC_shared_mem_key_file,P_ENC_shared_mem_size_file,P_semaphore_p1_key_file,ENC_semaphore_p1_key_file);
+    semaphore_signal(sem_p_p3_id);
+    #if DEBUG >= 1
+        printf("~ p1 %d releasing p3 %d\n", getpid(),sem_p_p3_id);
+    #endif
+
     }
     return 0;
 }
