@@ -16,10 +16,13 @@ int main(int argc, char const *argv[]) {
     strcpy(temp[3], "P2-hola bitch3");
 
     int sem_ENC2_p2_id = get_semaphore_id_from_file(ENC2_semaphore_p2_key_file);
+    int sem_ENC2_p4_id = get_semaphore_id_from_file(ENC2_semaphore_p4_key_file);
     int sem_p2_p1_id = get_semaphore_id_from_file(P2_semaphore_p1_key_file);
     int sem_p2_p2_id = get_semaphore_id_from_file(P2_semaphore_p2_key_file);
     int sem_p2_p3_id = get_semaphore_id_from_file(P2_semaphore_p3_key_file);
     int sem_p2_p4_id = get_semaphore_id_from_file(P2_semaphore_p4_key_file);
+    int sem_p1_p4_id = get_semaphore_id_from_file(P_semaphore_p4_key_file);
+
     int sem_ENC2_p3_id = get_semaphore_id_from_file(ENC2_semaphore_p3_key_file);
 
     P(ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,ENC2_semaphore_p1_key_file,P2_semaphore_p1_key_file);
@@ -33,7 +36,7 @@ int main(int argc, char const *argv[]) {
     printf("~P %d waiting from P1 to start sending message %d\n", getpid(),sem_p2_p4_id);
     #endif
     semaphore_wait(sem_p2_p4_id);
-    for (size_t i = 0; i <1; i++) {
+    for (size_t i = 0; i <3; i++) {
         cout<<"\n\n\n\n\n\n";
         cout<<"\n\n\n\n\n\n";
         #if DEBUG >= 1
@@ -62,13 +65,16 @@ int main(int argc, char const *argv[]) {
             printf("~ P2 %d releasing p3 %d\n", getpid(),sem_ENC2_p3_id);
         #endif
         #if DEBUG >= 1
-            printf("~P %d waiting from enc2 %d\n", getpid(),sem_ENC2_p2_id);
+            printf("~P %d waiting enc2 p4 %d\n", getpid(),sem_p2_p2_id);
         #endif
-        semaphore_wait(sem_ENC2_p2_id);
+        semaphore_wait(sem_p2_p2_id);
         P(ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,ENC2_semaphore_p1_key_file,P2_semaphore_p1_key_file);
-
         cout<<"\n\n\n\n\n\n";
         cout<<"\n\n\n\n\n\n";
+        #if DEBUG >= 1
+            printf("~ P2 %d releasing for statring p2 send message p4 %d\n", getpid(),sem_p1_p4_id);
+        #endif
+        semaphore_signal(sem_p1_p4_id);
 
     }
 
