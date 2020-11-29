@@ -24,6 +24,7 @@ int main(int argc, char const *argv[]) {
     int sem_p_p2_id = get_semaphore_id_from_file(P_semaphore_p2_key_file);
     int sem_p_p3_id = get_semaphore_id_from_file(P_semaphore_p3_key_file);
     int sem_p2_p4_id = get_semaphore_id_from_file(P2_semaphore_p4_key_file);
+    int sem_ENC_p2_id = get_semaphore_id_from_file(ENC_semaphore_p2_key_file);
 
     for (size_t i = 0; i <1; i++) {
         int mem_seg_id=get_memory_id_from_file(P_shared_mem_key_file,P_shared_mem_size_file);
@@ -61,8 +62,11 @@ int main(int argc, char const *argv[]) {
             printf("~P1 %d waiting p3 %d\n", getpid(),sem_p_p3_id);
         #endif
         semaphore_wait(sem_p_p3_id);
-        P(P_ENC_shared_mem_key_file,P_ENC_shared_mem_size_file,P_shared_mem_key_file,P_shared_mem_size_file,P_semaphore_p1_key_file,P_semaphore_p1_key_file);
-
+        P(P_ENC_shared_mem_key_file,P_ENC_shared_mem_size_file,P_ENC_shared_mem_key_file,P_ENC_shared_mem_size_file,ENC_semaphore_p1_key_file,P_semaphore_p1_key_file);
+        semaphore_signal(sem_ENC_p2_id);
+        #if DEBUG >= 1
+            printf("~ P %d releasing %d\n", getpid(),sem_ENC_p2_id);
+        #endif
 
         // printf("~P %d Message send succesfuly releas p2 semaphore,%d\n", getpid(),sem_p2_p3_id);
         //P(P_shared_mem_key_file,P_shared_mem_size_file,P_ENC_shared_mem_key_file,P_ENC_shared_mem_size_file ,ENC_semaphore_p1_key_file,P_semaphore_p1_key_file);

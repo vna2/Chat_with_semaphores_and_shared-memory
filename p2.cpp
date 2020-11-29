@@ -30,7 +30,7 @@ int main(int argc, char const *argv[]) {
 
 
     #if DEBUG >= 1
-    printf("~P %d waiting from P1 %d\n", getpid(),sem_p2_p4_id);
+    printf("~P %d waiting from P1 to start sending message %d\n", getpid(),sem_p2_p4_id);
     #endif
     semaphore_wait(sem_p2_p4_id);
     for (size_t i = 0; i <1; i++) {
@@ -61,8 +61,12 @@ int main(int argc, char const *argv[]) {
         #if DEBUG >= 1
             printf("~ P2 %d releasing p3 %d\n", getpid(),sem_ENC2_p3_id);
         #endif
-        // semaphore_signal(sem_p2_p3_id);
-        // printf("~P %d Message send succesfuly realeas p2 semaphore,%d\n", getpid(),sem_p2_p3_id);
+        #if DEBUG >= 1
+            printf("~P %d waiting from enc2 %d\n", getpid(),sem_ENC2_p2_id);
+        #endif
+        semaphore_wait(sem_ENC2_p2_id);
+        P(ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,ENC2_semaphore_p1_key_file,P2_semaphore_p1_key_file);
+
 
     }
 
