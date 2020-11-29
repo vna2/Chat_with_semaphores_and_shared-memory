@@ -23,7 +23,7 @@ int main(int argc, char const *argv[]) {
     int sem_p_p1_id = get_semaphore_id_from_file(P_semaphore_p1_key_file);
     int sem_p_p2_id = get_semaphore_id_from_file(P_semaphore_p2_key_file);
     int sem_p_p3_id = get_semaphore_id_from_file(P_semaphore_p3_key_file);
-    int sem_p2_p4_id = get_semaphore_id_from_file(P2_semaphore_p3_key_file);
+    int sem_p2_p4_id = get_semaphore_id_from_file(P2_semaphore_p4_key_file);
 
     for (size_t i = 0; i <1; i++) {
         int mem_seg_id=get_memory_id_from_file(P_shared_mem_key_file,P_shared_mem_size_file);

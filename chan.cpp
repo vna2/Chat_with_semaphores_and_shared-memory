@@ -5,6 +5,7 @@ int CHAN(char* read_shared_mem_key_file, int read_shared_mem_size_file,char* wri
 
 int main(int argc, char const *argv[]) {
     int sem_CHAN_p2_id = get_semaphore_id_from_file(CHAN_semaphore_p2_key_file);
+    int sem_CHAN_p3_id = get_semaphore_id_from_file(CHAN_semaphore_p3_key_file);
     int sem_ENC_p2_id = get_semaphore_id_from_file(ENC_semaphore_p2_key_file);
     int sem_ENC_p3_id = get_semaphore_id_from_file(ENC_semaphore_p3_key_file);
     int sem_ENC2_p3_id = get_semaphore_id_from_file(ENC2_semaphore_p3_key_file);
@@ -32,9 +33,9 @@ int main(int argc, char const *argv[]) {
         cout << "THIS IS P2 MESSAGE\n";
     #endif
     #if DEBUG >= 1
-        printf("~ENC2 %d waiting p3 %d\n", getpid(),sem_ENC2_p3_id);
+        printf("~ENC2 %d waiting p3 %d\n", getpid(),sem_CHAN_p3_id);
     #endif
-    semaphore_wait(sem_ENC2_p3_id);
+    semaphore_wait(sem_CHAN_p3_id);
     CHAN(CHAN_ENC_shared_mem_key_file,CHAN_ENC_shared_mem_size_file,ENC_CHAN_shared_mem_key_file,ENC_CHAN_shared_mem_size_file,ENC_semaphore_p1_key_file,CHAN_semaphore_p1_key_file);
     semaphore_signal(sem_ENC_p3_id);
     #if DEBUG >= 1

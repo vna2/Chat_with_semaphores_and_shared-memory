@@ -15,24 +15,24 @@ int main(int argc, char const *argv[]) {
     strcpy(temp[2], "P2-hola bitch2");
     strcpy(temp[3], "P2-hola bitch3");
 
-    int sem_enc2_p2_id = get_semaphore_id_from_file(ENC2_semaphore_p2_key_file);
+    int sem_ENC2_p2_id = get_semaphore_id_from_file(ENC2_semaphore_p2_key_file);
     int sem_p2_p1_id = get_semaphore_id_from_file(P2_semaphore_p1_key_file);
     int sem_p2_p2_id = get_semaphore_id_from_file(P2_semaphore_p2_key_file);
     int sem_p2_p3_id = get_semaphore_id_from_file(P2_semaphore_p3_key_file);
     int sem_p2_p4_id = get_semaphore_id_from_file(P2_semaphore_p4_key_file);
-    int sem_enc2_p3_id = get_semaphore_id_from_file(ENC2_semaphore_p3_key_file);
+    int sem_ENC2_p3_id = get_semaphore_id_from_file(ENC2_semaphore_p3_key_file);
 
     P(ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,ENC2_semaphore_p1_key_file,P2_semaphore_p1_key_file);
-    semaphore_signal(sem_enc2_p2_id);
+    semaphore_signal(sem_ENC2_p2_id);
     #if DEBUG >= 1
-        printf("~ enc2 %d releasing %d\n", getpid(),sem_enc2_p2_id);
+        printf("~ ENC2 %d releasing %d\n", getpid(),sem_ENC2_p2_id);
     #endif
 
 
+    #if DEBUG >= 1
+    printf("~P %d waiting from P1 %d\n", getpid(),sem_p2_p4_id);
+    #endif
     semaphore_wait(sem_p2_p4_id);
-    #if DEBUG >= 1
-        printf("~P %d waiting from P1 %d\n", getpid(),sem_p2_p4_id);
-    #endif
     for (size_t i = 0; i <1; i++) {
         cout<<"\n\n\n\n\n\n";
         cout<<"\n\n\n\n\n\n";
@@ -57,9 +57,9 @@ int main(int argc, char const *argv[]) {
             printf("~ P2 %d releasing p1 %d\n", getpid(),sem_p2_p1_id);
         #endif
         P(P2_shared_mem_key_file,P2_shared_mem_size_file,ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,ENC2_semaphore_p1_key_file,P2_semaphore_p1_key_file);
-        semaphore_signal(sem_p2_p3_id);
+        semaphore_signal(sem_ENC2_p3_id);
         #if DEBUG >= 1
-            printf("~ P2 %d releasing p3 %d\n", getpid(),sem_p2_p3_id);
+            printf("~ P2 %d releasing p3 %d\n", getpid(),sem_ENC2_p3_id);
         #endif
         // semaphore_signal(sem_p2_p3_id);
         // printf("~P %d Message send succesfuly realeas p2 semaphore,%d\n", getpid(),sem_p2_p3_id);
