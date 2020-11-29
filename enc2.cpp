@@ -21,20 +21,18 @@ int main(int argc, char const *argv[]){
         cout<<"\n\n\n\n\n\n";
         cout<<"\n\n\n\n\n\n";
     #if DEBUG >= 1
-        cout << "THIS IS P1 MESSAGE";
+        cout << "THIS IS P1 MESSAGE\n";
     #endif
     #if DEBUG >= 1
         printf("~ENC2 %d CHAN ,%d\n", getpid(),sem_ENC2_p2_id);
     #endif
     semaphore_wait(sem_ENC2_p2_id);
-    ENC(CHAN_ENC_shared_mem_key_file,CHAN_ENC_shared_mem_size_file,ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,P2_semaphore_p1_key_file,ENC2_semaphore_p1_key_file);
-    if(flag==1){
-    semaphore_signal(sem_p2_p2_id);
-    #if DEBUG >= 1
-        printf("~ CHAN %d releasing p2 %d\n", getpid(),sem_p2_p2_id);
-    #endif
 
-    }
+    ENC(CHAN_ENC_shared_mem_key_file,CHAN_ENC_shared_mem_size_file,ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,P2_semaphore_p1_key_file,ENC2_semaphore_p1_key_file);
+    #if DEBUG >= 1
+        printf("~ ENC2 %d releasing %d\n", getpid(),sem_p2_p2_id);
+    #endif
+    semaphore_signal(sem_p2_p2_id);
     cout<<"\n\n\n\n\n\n";
     #if DEBUG >= 1
         printf("~ENC2 %d waiting message back p2 %d\n", getpid(),sem_ENC2_p2_id);
@@ -101,7 +99,7 @@ int ENC(char* read_shared_mem_key_file,int read_shared_mem_size_file,char* write
     if(shared_memory_read==(void*)-1)die("shared memory ENC-read");
 
 
-    //~~~~~~~~~~~~~~~~~READ FROM P~~~~~~~~~~~~~~~~~~//
+    //~~~~~~~~~~~~~~~~~READ FROM~~~~~~~~~~~~~~~~~~//
     message* mess = new message(shared_memory_read->message_arrey);
     mess->flag_checksum=shared_memory_read->flag_checksum;
     #if DEBUG >= 1
@@ -119,23 +117,23 @@ int ENC(char* read_shared_mem_key_file,int read_shared_mem_size_file,char* write
 
     char* checksum = new char[1000];
     strcpy(checksum,md5(mess->message_arrey).c_str());
-    if(mess->flag_checksum==-1){
-        cout << "FIRST IF \n";
-        strcpy(mess->checksum,checksum);
-        mess->flag_checksum=0;
-
-    }
-    else if(strcmp(md5(mess->message_arrey).c_str(),mess->checksum)!=0){
-        #if DEBUG>= 2
-        cout<<" different checksum try resend\n";
-        #endif
-        cout << "SECOND IF \n";
-        resend_flag=-1;
-    }
-    else if(mess->flag_checksum==0){
-        cout << "THIRD IF \n";
-        strcpy(mess->checksum,checksum);
-    }
+    // if(mess->flag_checksum==-1){
+    //     cout << "FIRST IF \n";
+    //     strcpy(mess->checksum,checksum);
+    //     mess->flag_checksum=0;
+    //
+    // }
+    // else if(strcmp(md5(mess->message_arrey).c_str(),mess->checksum)!=0){
+    //     #if DEBUG>= 2
+    //     cout<<" different checksum try resend\n";
+    //     #endif
+    //     cout << "SECOND IF \n";
+    //     resend_flag=-1;
+    // }
+    // else if(mess->flag_checksum==0){
+    //     cout << "THIRD IF \n";
+    //     strcpy(mess->checksum,checksum);
+    // }
 
 
 
