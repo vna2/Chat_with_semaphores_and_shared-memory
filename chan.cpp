@@ -137,3 +137,21 @@ int CHAN(char* read_shared_mem_key_file, int read_shared_mem_size_file,char* wri
     #endif
 
 }
+int resend_message(char* shared_mem_key_file,int shared_mem_size_file){
+    //~~~~~~~~~~~~~~~~~~~memory~~~~~~~~~~~~~~~~~~~~~~~//
+    /* Attach the shared memory segment. */
+    int mem_seg_id=get_memory_id_from_file(shared_mem_key_file,shared_mem_size_file);
+    message* shared_memory = (message*) shmat(mem_seg_id, NULL, 0);
+    if(shared_memory==(void*)-1)die("shared memory ENC-write");
+
+    if(shared_memory->flag_checksum==1){
+
+    }
+
+/* Detach the shared memory segment. */
+    shmdt(shared_memory);
+    #if DEBUG>= 2
+        cout<<"\t"<<getpid()<<" detached memory ENC_CHAN\n";
+    #endif
+
+}
