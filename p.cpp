@@ -3,6 +3,8 @@
 #include "md5/md5.h"
 
 int P(char* read_shared_mem_key_file,int read_shared_mem_size_file,char* write_shared_mem_key_file, int write_shared_mem_size_file,char* write_semaphore,char* read_semaphore);
+int resend_message(char* shared_mem_key_file,int shared_mem_size_file);
+int resend_flag=0;
 
 int main(int argc, char const *argv[]) {
     initialized_all_shared_memmory_semaphores();
@@ -20,7 +22,8 @@ int main(int argc, char const *argv[]) {
 
     //~~~~~~~~~~~~~~~~~~~memory~~~~~~~~~~~~~~~~~~~~~~~//
     /* Attach the shared memory segment. */
-
+    int sem_p_resend_p1_id = get_semaphore_id_from_file(P_semaphore_resend_p1_key_file);
+    int sem_ENC_resend_p1_id = get_semaphore_id_from_file(ENC_semaphore_resend_p1_key_file);
     int sem_p_p1_id = get_semaphore_id_from_file(P_semaphore_p1_key_file);
     int sem_p_p2_id = get_semaphore_id_from_file(P_semaphore_p2_key_file);
     int sem_p_p3_id = get_semaphore_id_from_file(P_semaphore_p3_key_file);
@@ -45,6 +48,7 @@ int main(int argc, char const *argv[]) {
         #if DEBUG>= 2
             cout<<"\t"<<getpid()<<" detached memory P-ENC\n";
         #endif
+
         semaphore_signal(sem_p_p1_id);
         #if DEBUG >= 1
             printf("~ P %d releasing %d\n", getpid(),sem_p_p1_id);
@@ -59,6 +63,36 @@ int main(int argc, char const *argv[]) {
             printf("~P %d waiting message back ,%d\n", getpid(),sem_p_p2_id);
         #endif
         semaphore_wait(sem_p_p2_id);
+        if(resend_message(P_ENC_shared_mem_key_file,P_ENC_shared_mem_size_file)==1){
+            int resend_flag=1;
+            
+            mem_seg_id=get_memory_id_from_file(P_shared_mem_key_file,P_shared_mem_size_file);
+            message* shared_memory_resend = (message*) shmat(mem_seg_id, NULL, 0);
+            if(shared_memory_resend==(void*)-1)die("shared memory P");
+            #if DEBUG >= 2
+                printf ("! shared memory attached at address %p\n", shared_memory_resend);
+            #endif
+            strcpy(shared_memory_resend->message_arrey,temp[i]);
+            //~~~~~~~~~~~~~~~~~~~clears~~~~~~~~~~~~~~~~~~~~~~~//
+            /* Detach the shared memory segment. */
+            shmdt(shared_memory_resend);
+            #if DEBUG>= 2
+                cout<<"\t"<<getpid()<<" detached memory P-ENC\n";
+            #endif
+            P(P_shared_mem_key_file,P_shared_mem_size_file,P_ENC_shared_mem_key_file,P_ENC_shared_mem_size_file ,ENC_semaphore_p1_key_file,P_semaphore_p1_key_file);
+            #if DEBUG >= 1
+                printf("~ %d releasing ENC p2 %d\n", getpid(),sem_ENC_p2_id);
+            #endif
+            #if DEBUG >= 1
+                printf("~ CHAN %d releasing Resend %d\n", getpid(),sem_p_resend_p1_id);
+            #endif
+            semaphore_signal(sem_ENC_resend_p1_id);
+        }
+        if(resend_flag==1)
+            #if DEBUG >= 1
+                printf("~P %d waiting message back ,%d\n", getpid(),sem_p_p2_id);
+            #endif
+            semaphore_wait(sem_p_p2_id);
         P(P_ENC_shared_mem_key_file,P_ENC_shared_mem_size_file,P_shared_mem_key_file,P_shared_mem_size_file,P_semaphore_p1_key_file,P_semaphore_p1_key_file);
         #if DEBUG >= 1
             printf("~ P2 %d releasing for statring p2 send message p4 %d\n", getpid(),sem_p2_p4_id);
@@ -159,4 +193,26 @@ int P(char* read_shared_mem_key_file,int read_shared_mem_size_file,char* write_s
     #endif
 
     return 0;
+}
+
+int resend_message(char* shared_mem_key_file,int shared_mem_size_file){
+    int resend_flag=0;
+
+    //~~~~~~~~~~~~~~~~~~~memory~~~~~~~~~~~~~~~~~~~~~~~//
+    /* Attach the shared memory segment. */
+    int mem_seg_id=get_memory_id_from_file(shared_mem_key_file,shared_mem_size_file);
+    message* shared_memory = (message*) shmat(mem_seg_id, NULL, 0);
+    if(shared_memory==(void*)-1)die("shared memory ENC-write");
+
+    if(shared_memory->flag_checksum==1){
+        int resend_flag=1;
+
+    }
+
+/* Detach the shared memory segment. */
+    shmdt(shared_memory);
+    #if DEBUG>= 2
+        cout<<"\t"<<getpid()<<" detached memory ENC_CHAN\n";
+    #endif
+    return resend_flag;
 }

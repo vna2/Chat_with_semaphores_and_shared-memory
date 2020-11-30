@@ -25,9 +25,9 @@
 #define BUFFER_MESSEGE_LENGTH  500
 #define NUM_OF_MESSEGES 100
 #define DEBUG 2
-
 using namespace std;
 
+int flag_for_CHAN_resend=0;
 class message{
   public:
     //int message_length ;

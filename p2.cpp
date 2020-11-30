@@ -36,7 +36,7 @@ int main(int argc, char const *argv[]) {
     #if DEBUG >= 1
     printf("~P %d waiting from P1 to start sending message %d\n", getpid(),sem_p2_p4_id);
     #endif
-    for (size_t i = 0; i <1; i++) {
+    for (size_t i = 0; i <0; i++) {
         #if DEBUG >= 1
             cout << "THIS IS P2 MESSAGE\n";
         #endif
