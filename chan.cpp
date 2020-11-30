@@ -108,7 +108,7 @@ int CHAN(char* read_shared_mem_key_file, int read_shared_mem_size_file,char* wri
     #endif
 
     //~~~~~~~~~~~~~~~CHANGE ON CHANEL~~~~~~~~~~~~~~~~//
-        //strcpy(mess->message_arrey,"aaaaa");
+        strcpy(mess->message_arrey,"aaaaa");
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 

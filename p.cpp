@@ -15,6 +15,7 @@ int main(int argc, char const *argv[]) {
     strcpy(temp[1], "P1-hola bitch1");
     strcpy(temp[2], "P1-hola bitch2");
     strcpy(temp[3], "P1-hola bitch3");
+    strcpy(temp[4], "TERM");
 
 
     //~~~~~~~~~~~~~~~~~~~memory~~~~~~~~~~~~~~~~~~~~~~~//
@@ -28,7 +29,7 @@ int main(int argc, char const *argv[]) {
     int sem_ENC_p4_id = get_semaphore_id_from_file(ENC_semaphore_p4_key_file);
     int sem_ENC_p2_id = get_semaphore_id_from_file(ENC_semaphore_p2_key_file);
 
-    for (size_t i = 0; i <3; i++) {
+    for (size_t i = 0; i <1; i++) {
         cout << "THIS IS P1 MESSAGE \n";
 
         int mem_seg_id=get_memory_id_from_file(P_shared_mem_key_file,P_shared_mem_size_file);
