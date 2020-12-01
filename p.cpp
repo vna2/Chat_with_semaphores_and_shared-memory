@@ -4,9 +4,9 @@
 
 int P(char* read_shared_mem_key_file,int read_shared_mem_size_file,char* write_shared_mem_key_file, int write_shared_mem_size_file,char* write_semaphore,char* read_semaphore);
 int resend_message(char* shared_mem_key_file,int shared_mem_size_file);
-int resend_flag=0;
 
 int main(int argc, char const *argv[]) {
+    int resend_flag=0;
     initialized_all_shared_memmory_semaphores();
     char* temp[5];
     int status =0;
@@ -65,7 +65,7 @@ int main(int argc, char const *argv[]) {
         semaphore_wait(sem_p_p2_id);
         if(resend_message(P_ENC_shared_mem_key_file,P_ENC_shared_mem_size_file)==1){
             cout<< "RESEND MESSAGE \n";
-            int resend_flag=1;
+            resend_flag=1;
             mem_seg_id=get_memory_id_from_file(P_shared_mem_key_file,P_shared_mem_size_file);
             message* shared_memory_resend = (message*) shmat(mem_seg_id, NULL, 0);
             if(shared_memory_resend==(void*)-1)die("shared memory P");

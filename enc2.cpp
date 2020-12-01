@@ -54,13 +54,18 @@ int main(int argc, char const *argv[]){
 
         ENC(CHAN_ENC_shared_mem_key_file,CHAN_ENC_shared_mem_size_file,ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,P2_semaphore_p1_key_file,ENC2_semaphore_p1_key_file);
         resend_flag=1;
-
+        #if DEBUG >= 1
+            printf("~ ENC2 %d releasing %d\n", getpid(),sem_p2_p2_id);
+        #endif
+        semaphore_signal(sem_p2_p2_id);
 
     }
-    if(resend_flag==0){
+    if(resend_flag==0)
         ENC(CHAN_ENC_shared_mem_key_file,CHAN_ENC_shared_mem_size_file,ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,P2_semaphore_p1_key_file,ENC2_semaphore_p1_key_file);
+        else
+
         resend_flag=0;
-    }
+
 
     #if DEBUG >= 1
         printf("~ ENC2 %d releasing %d\n", getpid(),sem_p2_p2_id);
