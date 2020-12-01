@@ -32,7 +32,7 @@ int main(int argc, char const *argv[]) {
     int sem_ENC_p4_id = get_semaphore_id_from_file(ENC_semaphore_p4_key_file);
     int sem_ENC_p2_id = get_semaphore_id_from_file(ENC_semaphore_p2_key_file);
 
-    for (size_t i = 0; i <1; i++) {
+    for (size_t i = 0; i <4; i++) {
         cout << "THIS IS P1 MESSAGE \n";
 
         int mem_seg_id=get_memory_id_from_file(P_shared_mem_key_file,P_shared_mem_size_file);
@@ -54,18 +54,18 @@ int main(int argc, char const *argv[]) {
             printf("~ P %d releasing %d\n", getpid(),sem_p_p1_id);
         #endif
         P(P_shared_mem_key_file,P_shared_mem_size_file,P_ENC_shared_mem_key_file,P_ENC_shared_mem_size_file ,ENC_semaphore_p1_key_file,P_semaphore_p1_key_file);
+        semaphore_signal(sem_ENC_p2_id);
         #if DEBUG >= 1
             printf("~ %d releasing ENC p2 %d\n", getpid(),sem_ENC_p2_id);
         #endif
-        semaphore_signal(sem_ENC_p2_id);
         cout<<"\n\n\n\n\n\n";
         #if DEBUG >= 1
             printf("~P %d waiting message back ,%d\n", getpid(),sem_p_p2_id);
         #endif
         semaphore_wait(sem_p_p2_id);
         if(resend_message(P_ENC_shared_mem_key_file,P_ENC_shared_mem_size_file)==1){
+            cout<< "RESEND MESSAGE \n";
             int resend_flag=1;
-            
             mem_seg_id=get_memory_id_from_file(P_shared_mem_key_file,P_shared_mem_size_file);
             message* shared_memory_resend = (message*) shmat(mem_seg_id, NULL, 0);
             if(shared_memory_resend==(void*)-1)die("shared memory P");
@@ -80,19 +80,22 @@ int main(int argc, char const *argv[]) {
                 cout<<"\t"<<getpid()<<" detached memory P-ENC\n";
             #endif
             P(P_shared_mem_key_file,P_shared_mem_size_file,P_ENC_shared_mem_key_file,P_ENC_shared_mem_size_file ,ENC_semaphore_p1_key_file,P_semaphore_p1_key_file);
-            #if DEBUG >= 1
-                printf("~ %d releasing ENC p2 %d\n", getpid(),sem_ENC_p2_id);
-            #endif
-            #if DEBUG >= 1
-                printf("~ CHAN %d releasing Resend %d\n", getpid(),sem_p_resend_p1_id);
-            #endif
+            // semaphore_signal(sem_ENC_p2_id);
+            // #if DEBUG >= 1
+            //     printf("~ %d releasing ENC p2 %d\n", getpid(),sem_ENC_p2_id);
+            // #endif
             semaphore_signal(sem_ENC_resend_p1_id);
+            #if DEBUG >= 1
+                printf("~ CHAN %d releasing Resend %d\n", getpid(),sem_ENC_resend_p1_id);
+            #endif
         }
-        if(resend_flag==1)
+        if(resend_flag==1){
             #if DEBUG >= 1
                 printf("~P %d waiting message back ,%d\n", getpid(),sem_p_p2_id);
             #endif
             semaphore_wait(sem_p_p2_id);
+            resend_flag=0;
+        }
         P(P_ENC_shared_mem_key_file,P_ENC_shared_mem_size_file,P_shared_mem_key_file,P_shared_mem_size_file,P_semaphore_p1_key_file,P_semaphore_p1_key_file);
         #if DEBUG >= 1
             printf("~ P2 %d releasing for statring p2 send message p4 %d\n", getpid(),sem_p2_p4_id);
@@ -122,6 +125,10 @@ int main(int argc, char const *argv[]) {
         //P(P_shared_mem_key_file,P_shared_mem_size_file,P_ENC_shared_mem_key_file,P_ENC_shared_mem_size_file ,ENC_semaphore_p1_key_file,P_semaphore_p1_key_file);
 
     }
+    #if DEBUG >= 1
+        printf("~ P2 %d releasing for statring p2 send message p4 %d\n", getpid(),sem_p2_p4_id);
+    #endif
+    semaphore_signal(sem_p2_p4_id);
 
 }
 
@@ -205,7 +212,7 @@ int resend_message(char* shared_mem_key_file,int shared_mem_size_file){
     if(shared_memory==(void*)-1)die("shared memory ENC-write");
 
     if(shared_memory->flag_checksum==1){
-        int resend_flag=1;
+        resend_flag=1;
 
     }
 

@@ -5,6 +5,7 @@
 int P(char* read_shared_mem_key_file,int read_shared_mem_size_file,char* write_shared_mem_key_file, int write_shared_mem_size_file,char* write_semaphore,char* read_semaphore);
 
 int main(int argc, char const *argv[]) {
+    
     char* temp[5];
     int status =0;
     for (size_t i = 0; i < 5; i++) {
@@ -36,7 +37,7 @@ int main(int argc, char const *argv[]) {
     #if DEBUG >= 1
     printf("~P %d waiting from P1 to start sending message %d\n", getpid(),sem_p2_p4_id);
     #endif
-    for (size_t i = 0; i <0; i++) {
+    for (size_t i = 0; i <4; i++) {
         #if DEBUG >= 1
             cout << "THIS IS P2 MESSAGE\n";
         #endif
@@ -50,7 +51,7 @@ int main(int argc, char const *argv[]) {
         //~~~~~~~~~~~~~~~~~~~clears~~~~~~~~~~~~~~~~~~~~~~~//
         /* Detach the shared memory segment. */
         shmdt(shared_memory);
-        #if DEBUG>= 2
+        #if DEBUG>= 1
             cout<<"\t"<<getpid()<<" detached memory P-ENC\n";
         #endif
         semaphore_signal(sem_p2_p1_id);
@@ -67,16 +68,7 @@ int main(int argc, char const *argv[]) {
         #endif
         semaphore_wait(sem_p2_p2_id);
         P(ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,ENC2_semaphore_p1_key_file,P2_semaphore_p1_key_file);
-        // #if DEBUG >= 1
-        //     printf("~ P2 %d releasing p2 %d\n", getpid(),sem_ENC2_p2_id);
-        // #endif
-        // semaphore_signal(sem_ENC2_p2_id);
 
-        // #if DEBUG >= 1
-        //     printf("~P %d waiting enc2 p4 %d\n", getpid(),sem_p2_p2_id);
-        // #endif
-        // semaphore_wait(sem_p2_p2_id);
-        // P(ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,ENC2_semaphore_p1_key_file,P2_semaphore_p1_key_file);
         #if DEBUG >= 1
         printf("~ P2 %d releasing for statring P1 send message p4 %d\n", getpid(),sem_p1_p4_id);
         #endif
@@ -103,7 +95,7 @@ int main(int argc, char const *argv[]) {
 }
 
 int P(char* read_shared_mem_key_file,int read_shared_mem_size_file,char* write_shared_mem_key_file, int write_shared_mem_size_file,char* write_semaphore,char* read_semaphore){
-    #if DEBUG >= 1
+    #if DEBUG >= 2
         cout<<"- P born now ID "<<getpid()<<" with parent  "<<getppid()<<endl;
     #endif
     //~~~~~~~~~~~~~~~~~~~semaphore~~~~~~~~~~~~~~~~~~~~~~~//
@@ -120,7 +112,7 @@ int P(char* read_shared_mem_key_file,int read_shared_mem_size_file,char* write_s
     int mem_seg_id_read=get_memory_id_from_file(read_shared_mem_key_file,read_shared_mem_size_file);
     message* shared_memory_read = (message*) shmat(mem_seg_id_read, NULL, 0);
     if(shared_memory_read==(void*)-1)die("shared memory P");
-    #if DEBUG >= 2
+    #if DEBUG >= 1
         printf ("! shared memory attached at address %p\n", shared_memory_read);
     #endif
 
@@ -129,7 +121,7 @@ int P(char* read_shared_mem_key_file,int read_shared_mem_size_file,char* write_s
     int mem_seg_id_write=get_memory_id_from_file(write_shared_mem_key_file,write_shared_mem_size_file);
     message* shared_memory_write = (message*) shmat(mem_seg_id_write, NULL, 0);
     if(shared_memory_write==(void*)-1)die("shared memory P");
-    #if DEBUG >= 2
+    #if DEBUG >= 1
         printf ("! shared memory attached at address %p\n", shared_memory_write);
     #endif
 
@@ -154,11 +146,11 @@ int P(char* read_shared_mem_key_file,int read_shared_mem_size_file,char* write_s
     //~~~~~~~~~~~~~~~~~~~clears~~~~~~~~~~~~~~~~~~~~~~~//
     /* Detach the shared memory segment. */
     shmdt(shared_memory_read);
-    #if DEBUG>= 2
+    #if DEBUG>= 1
     cout<<"\t"<<getpid()<<" detached memory P\n";
     #endif
     shmdt(shared_memory_write);
-    #if DEBUG>= 2
+    #if DEBUG>= 1
     cout<<"\t"<<getpid()<<" detached memory P-ENC\n";
     #endif
 
