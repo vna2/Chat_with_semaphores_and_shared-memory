@@ -253,6 +253,7 @@ void initialized_all_shared_memmory_semaphores(){
         key_t P2_semaphore_p2_key =ftok("p.o",29);
         key_t P2_semaphore_p3_key =ftok("p.o",30);
         key_t P2_semaphore_p4_key =ftok("p.o",31);
+        key_t P2_semaphore_resend_p1_key =ftok("p.o",37);
 
 
 
@@ -367,7 +368,8 @@ void initialized_all_shared_memmory_semaphores(){
         initialise_semaphore(sem_P2_p3);
         int sem_P2_p4=generate_semaphore(P2_semaphore_p4_key, P2_semaphore_p4_key_file);
         initialise_semaphore(sem_P2_p4);
-
+        int sem_resend_P2_p1=generate_semaphore(P2_semaphore_resend_p1_key, P2_semaphore_resend_p1_key_file);
+        initialise_semaphore(sem_resend_ENC2_p1);
 }
 
 

@@ -21,6 +21,7 @@ int main(int argc, char const *argv[]){
     int sem_p_p3_id  = get_semaphore_id_from_file(P_semaphore_p3_key_file);
     int sem_CHAN_p4_id = get_semaphore_id_from_file(CHAN_semaphore_p4_key_file);
     int sem_CHAN_p2_id = get_semaphore_id_from_file(CHAN_semaphore_p2_key_file);
+    int sem_CHAN_p3_id = get_semaphore_id_from_file(CHAN_semaphore_p3_key_file);
 
     int resend_flag=0;
 
@@ -50,19 +51,13 @@ int main(int argc, char const *argv[]){
         #endif
 
         resend_flag=1;
-        // #if DEBUG >= 1
-        //     printf("~ ENC %d releasing recend %d\n", getpid(),sem_ENC_p1_id);
-        // #endif
-        // semaphore_signal(sem_ENC_p1_id);
+
         ENC(ENC_CHAN_shared_mem_key_file,ENC_CHAN_shared_mem_size_file,P_ENC_shared_mem_key_file,P_ENC_shared_mem_size_file,P_semaphore_p1_key_file,ENC_semaphore_p1_key_file);
         semaphore_signal(sem_p_p2_id);
         #if DEBUG >= 1
             printf("~ ENC %d releasing Resend %d\n", getpid(),sem_p_p2_id);
         #endif
-        // semaphore_signal(sem_p_resend_p1_id);
-        // #if DEBUG >= 1
-        //     printf("~ ENC %d releasing Resend %d\n", getpid(),sem_p_resend_p1_id);
-        // #endif
+
         #if DEBUG >= 1
             printf("~ENC %d waiting recend MESSAGE BACK P ,%d\n", getpid(),sem_ENC_resend_p1_id);
         #endif
@@ -82,6 +77,7 @@ int main(int argc, char const *argv[]){
         semaphore_wait(sem_ENC_p2_id);
         resend_flag=0;
     }
+    ENC_job(1,ENC_CHAN_shared_mem_key_file,ENC_CHAN_shared_mem_size_file);
     ENC(ENC_CHAN_shared_mem_key_file,ENC_CHAN_shared_mem_size_file,P_ENC_shared_mem_key_file,P_ENC_shared_mem_size_file,P_semaphore_p1_key_file,ENC_semaphore_p1_key_file);
     semaphore_signal(sem_p_p2_id);
     #if DEBUG >= 1
@@ -98,7 +94,31 @@ int main(int argc, char const *argv[]){
         printf("~ENC1 %d waiting p3 %d\n", getpid(),sem_ENC_p3_id);
     #endif
     semaphore_wait(sem_ENC_p3_id);
-    ENC(ENC_CHAN_shared_mem_key_file,ENC_CHAN_shared_mem_size_file,P_ENC_shared_mem_key_file,P_ENC_shared_mem_size_file,P_semaphore_p1_key_file,ENC_semaphore_p1_key_file);
+    if(ENC_job(2,ENC_CHAN_shared_mem_key_file,ENC_CHAN_shared_mem_size_file)==-1){
+        #if DEBUG >= 2
+        cout<< "RESEND MESSAGE \n";
+        #endif
+        ENC(ENC_CHAN_shared_mem_key_file,ENC_CHAN_shared_mem_size_file,CHAN_ENC_shared_mem_key_file,CHAN_ENC_shared_mem_size_file,CHAN_semaphore_p1_key_file,ENC_semaphore_p1_key_file);
+        #if DEBUG >= 1
+        printf("~ ENC2 %d releasing Resend %d\n", getpid(),sem_CHAN_p4_id);
+        #endif
+        semaphore_signal(sem_CHAN_p4_id);
+        #if DEBUG >= 1
+            printf("~ENC2 %d waiting Resend MESSAGE BACK chan ,%d\n", getpid(),sem_ENC_resend_p1_id);
+        #endif
+        semaphore_wait(sem_ENC_resend_p1_id);
+        ENC(ENC_CHAN_shared_mem_key_file,ENC_CHAN_shared_mem_size_file,P_ENC_shared_mem_key_file,P_ENC_shared_mem_size_file,P_semaphore_p1_key_file,ENC_semaphore_p1_key_file);
+        #if DEBUG >= 1
+            printf("~ ENC2 %d releasing %d\n", getpid(),sem_p_p3_id);
+        #endif
+        resend_flag=1;
+        semaphore_signal(sem_p_p3_id);
+    }
+    if(resend_flag==0)
+        ENC(ENC_CHAN_shared_mem_key_file,ENC_CHAN_shared_mem_size_file,P_ENC_shared_mem_key_file,P_ENC_shared_mem_size_file,P_semaphore_p1_key_file,ENC_semaphore_p1_key_file);
+    else
+        resend_flag=0;
+
     semaphore_signal(sem_p_p3_id);
     #if DEBUG >= 1
         printf("~ p1 %d releasing p3 %d\n", getpid(),sem_p_p3_id);
@@ -222,6 +242,8 @@ int ENC_job(int ENC_type,char* read_shared_mem_key_file,int read_shared_mem_size
     if(shared_memory_read==(void*)-1)die("shared memory ENC-read");
 
     message* mess = new message(shared_memory_read->message_arrey);
+    strcpy(mess->checksum,shared_memory_read->checksum);
+    shared_memory_read->checksum[33]='\0';
     mess->flag_checksum=shared_memory_read->flag_checksum;
 
     char* checksum = new char[1000];

@@ -80,10 +80,7 @@ int main(int argc, char const *argv[]) {
                 cout<<"\t"<<getpid()<<" detached memory P-ENC\n";
             #endif
             P(P_shared_mem_key_file,P_shared_mem_size_file,P_ENC_shared_mem_key_file,P_ENC_shared_mem_size_file ,ENC_semaphore_p1_key_file,P_semaphore_p1_key_file);
-            // semaphore_signal(sem_ENC_p2_id);
-            // #if DEBUG >= 1
-            //     printf("~ %d releasing ENC p2 %d\n", getpid(),sem_ENC_p2_id);
-            // #endif
+
             semaphore_signal(sem_ENC_resend_p1_id);
             #if DEBUG >= 1
                 printf("~ CHAN %d releasing Resend %d\n", getpid(),sem_ENC_resend_p1_id);
