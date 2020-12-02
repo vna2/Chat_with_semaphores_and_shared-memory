@@ -79,7 +79,7 @@ int main(int argc, char const *argv[]) {
             #if DEBUG>= 2
                 cout<<"\t"<<getpid()<<" detached memory P-ENC\n";
             #endif
-            P(P_shared_mem_key_file,P_shared_mem_size_file,P_ENC_shared_mem_key_file,P_ENC_shared_mem_size_file ,ENC_semaphore_p1_key_file,P_semaphore_p1_key_file);
+            P(P_ENC_shared_mem_key_file,P_ENC_shared_mem_size_file ,P_shared_mem_key_file,P_shared_mem_size_file,ENC_semaphore_p1_key_file,P_semaphore_p1_key_file);
 
             semaphore_signal(sem_ENC_resend_p1_id);
             #if DEBUG >= 1

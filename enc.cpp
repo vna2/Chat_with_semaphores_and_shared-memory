@@ -108,11 +108,11 @@ int main(int argc, char const *argv[]){
         #endif
         semaphore_wait(sem_ENC_resend_p1_id);
         ENC(ENC_CHAN_shared_mem_key_file,ENC_CHAN_shared_mem_size_file,P_ENC_shared_mem_key_file,P_ENC_shared_mem_size_file,P_semaphore_p1_key_file,ENC_semaphore_p1_key_file);
-        #if DEBUG >= 1
-            printf("~ ENC2 %d releasing %d\n", getpid(),sem_p_p3_id);
-        #endif
         resend_flag=1;
-        semaphore_signal(sem_p_p3_id);
+        // #if DEBUG >= 1
+        //     printf("~ ENC2 %d releasing %d\n", getpid(),sem_p_p3_id);
+        // #endif
+        // semaphore_signal(sem_p_p3_id);
     }
     if(resend_flag==0)
         ENC(ENC_CHAN_shared_mem_key_file,ENC_CHAN_shared_mem_size_file,P_ENC_shared_mem_key_file,P_ENC_shared_mem_size_file,P_semaphore_p1_key_file,ENC_semaphore_p1_key_file);

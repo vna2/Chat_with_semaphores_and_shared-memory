@@ -97,12 +97,11 @@ int main(int argc, char const *argv[]){
         printf("~ENC2 %d waiting message back ,%d\n", getpid(),sem_ENC2_p4_id);
     #endif
     semaphore_wait(sem_ENC2_p4_id);
-    if(resend_message(ENC_CHAN_shared_mem_key_file,ENC_CHAN_shared_mem_size_file)==1){
+    if(resend_message(CHAN_ENC_shared_mem_key_file,CHAN_ENC_shared_mem_size_file)==1){
         resend_flag=1;
         #if DEBUG >= 2
         cout<< "RESEND MESSAGE \n";
         #endif
-        resend_flag=1;
         ENC(CHAN_ENC_shared_mem_key_file,CHAN_ENC_shared_mem_size_file,ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,P2_semaphore_p1_key_file,ENC2_semaphore_p1_key_file);
         semaphore_signal(sem_p2_p2_id);
         #if DEBUG >= 1
@@ -122,9 +121,9 @@ int main(int argc, char const *argv[]){
     }
     if(resend_flag==1){
         #if DEBUG >= 1
-            printf("~ENC %d waiting message back ,%d\n", getpid(),sem_ENC2_p3_id);
+            printf("~ENC %d waiting message back ,%d\n", getpid(),sem_ENC2_p4_id);
         #endif
-        semaphore_wait(sem_ENC2_p3_id);
+        semaphore_wait(sem_ENC2_p4_id);
         resend_flag=0;
     }
     ENC_job(1,CHAN_ENC_shared_mem_key_file,CHAN_ENC_shared_mem_size_file);

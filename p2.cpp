@@ -75,7 +75,7 @@ int main(int argc, char const *argv[]) {
             printf("~P %d waiting message back p2 %d\n", getpid(),sem_p2_p2_id);
         #endif
         semaphore_wait(sem_p2_p2_id);
-        if(resend_message(P_ENC_shared_mem_key_file,P_ENC_shared_mem_size_file)==1){
+        if(resend_message(ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file)==1){
             cout<< "RESEND MESSAGE \n";
             resend_flag=1;
             mem_seg_id=get_memory_id_from_file(P_shared_mem_key_file,P_shared_mem_size_file);
