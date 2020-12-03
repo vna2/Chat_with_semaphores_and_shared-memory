@@ -38,6 +38,7 @@ int main(int argc, char const *argv[]){
         #if DEBUG >= 2
         cout<< "RESEND MESSAGE \n";
         #endif
+        resend_flag=1;
         ENC(CHAN_ENC_shared_mem_key_file,CHAN_ENC_shared_mem_size_file,CHAN_ENC_shared_mem_key_file,CHAN_ENC_shared_mem_size_file,CHAN_semaphore_p1_key_file,ENC2_semaphore_p1_key_file);
         #if DEBUG >= 1
         printf("~ ENC2 %d releasing Resend %d\n", getpid(),sem_CHAN_p2_id);
@@ -49,7 +50,6 @@ int main(int argc, char const *argv[]){
         semaphore_wait(sem_ENC2_resend_p1_id);
 
         ENC(CHAN_ENC_shared_mem_key_file,CHAN_ENC_shared_mem_size_file,ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,P2_semaphore_p1_key_file,ENC2_semaphore_p1_key_file);
-        resend_flag=1;
         #if DEBUG >= 1
             printf("~ ENC2 %d releasing %d\n", getpid(),sem_p2_p2_id);
         #endif
@@ -61,12 +61,14 @@ int main(int argc, char const *argv[]){
     else
         resend_flag=0;
 
-
     #if DEBUG >= 1
         printf("~ ENC2 %d releasing %d\n", getpid(),sem_p2_p2_id);
     #endif
     semaphore_signal(sem_p2_p2_id);
     cout<<"\n\n\n\n\n\n";
+    if(if_term(CHAN_ENC_shared_mem_key_file,CHAN_ENC_shared_mem_size_file)==1){
+        return 0;
+    }
     #if DEBUG >= 1
         printf("~ENC2 %d waiting message back p2 %d\n", getpid(),sem_ENC2_p2_id);
     #endif
@@ -93,6 +95,9 @@ int main(int argc, char const *argv[]){
     #if DEBUG >= 1
         printf("~ CHAN %d releasing p2 %d\n", getpid(),sem_CHAN_p3_id);
     #endif
+    if(if_term(ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file)==1){
+        return 0;
+    }
     #if DEBUG >= 1
         printf("~ENC2 %d waiting message back ,%d\n", getpid(),sem_ENC2_p4_id);
     #endif
@@ -214,59 +219,4 @@ int ENC(char* read_shared_mem_key_file,int read_shared_mem_size_file,char* write
     //if
     return 0;
 
-}
-
-int resend_message(char* shared_mem_key_file,int shared_mem_size_file){
-    int resend_flag=0;
-
-    //~~~~~~~~~~~~~~~~~~~memory~~~~~~~~~~~~~~~~~~~~~~~//
-    /* Attach the shared memory segment. */
-    int mem_seg_id=get_memory_id_from_file(shared_mem_key_file,shared_mem_size_file);
-    message* shared_memory = (message*) shmat(mem_seg_id, NULL, 0);
-    if(shared_memory==(void*)-1)die("shared memory ENC-write");
-
-    if(shared_memory->flag_checksum==1){
-        resend_flag=1;
-
-    }
-
-/* Detach the shared memory segment. */
-    shmdt(shared_memory);
-    #if DEBUG>= 2
-        cout<<"\t"<<getpid()<<" detached memory ENC_CHAN\n";
-    #endif
-    return resend_flag;
-}
-int ENC_job(int ENC_type,char* read_shared_mem_key_file,int read_shared_mem_size_file){
-    int resend_flag=0;
-
-    int mem_seg_read_id=get_memory_id_from_file(read_shared_mem_key_file,read_shared_mem_size_file);
-    message* shared_memory_read = (message*) shmat(mem_seg_read_id, NULL, 0);
-    if(shared_memory_read==(void*)-1)die("shared memory ENC-read");
-
-    message* mess = new message(shared_memory_read->message_arrey);
-    strcpy(mess->checksum,shared_memory_read->checksum);
-    shared_memory_read->checksum[33]='\0';
-    mess->flag_checksum=shared_memory_read->flag_checksum;
-
-    char* checksum = new char[1000];
-    strcpy(checksum,md5(mess->message_arrey).c_str());
-    if(ENC_type==1){
-        cout << "ENC TYPE 1\n";
-        strcpy(shared_memory_read->checksum,checksum);
-    }
-    else if(ENC_type==2){
-        cout<< ".c_str: "<< md5(mess->message_arrey).c_str()<< " mess checksum: "<<mess->checksum<<endl;
-        if(strcmp(md5(mess->message_arrey).c_str(),mess->checksum)!=0){
-            #if DEBUG>= 2
-            cout << "ENC TYPE 1";
-            #endif
-            #if DEBUG>= 2
-            cout<<" different checksum try resend\n";
-            #endif
-            shared_memory_read->flag_checksum=1;
-            resend_flag=-1;
-        }
-    }
-    return resend_flag;
 }

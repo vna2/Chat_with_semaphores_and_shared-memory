@@ -14,7 +14,7 @@ int main(int argc, char const *argv[]) {
         temp[i] = new char;
     }
     strcpy(temp[0], "P1-hola bitch");
-    strcpy(temp[1], "P1-hola bitch1");
+    strcpy(temp[1], "P1-hola bitch1"); //P1-hola bitch1
     strcpy(temp[2], "P1-hola bitch2");
     strcpy(temp[3], "P1-hola bitch3");
     strcpy(temp[4], "TERM");
@@ -48,7 +48,6 @@ int main(int argc, char const *argv[]) {
         #if DEBUG>= 2
             cout<<"\t"<<getpid()<<" detached memory P-ENC\n";
         #endif
-
         semaphore_signal(sem_p_p1_id);
         #if DEBUG >= 1
             printf("~ P %d releasing %d\n", getpid(),sem_p_p1_id);
@@ -58,6 +57,9 @@ int main(int argc, char const *argv[]) {
         #if DEBUG >= 1
             printf("~ %d releasing ENC p2 %d\n", getpid(),sem_ENC_p2_id);
         #endif
+        if(strcmp(temp[i],"TERM")==0){
+            return 1;
+        }
         cout<<"\n\n\n\n\n\n";
         #if DEBUG >= 1
             printf("~P %d waiting message back ,%d\n", getpid(),sem_p_p2_id);
@@ -107,6 +109,9 @@ int main(int argc, char const *argv[]) {
             printf("~P1 %d waiting p3 %d\n", getpid(),sem_p_p3_id);
         #endif
         semaphore_wait(sem_p_p3_id);
+        if(if_term(P_ENC_shared_mem_key_file,P_ENC_shared_mem_size_file)==1){
+            return 0;
+        }
         P(P_ENC_shared_mem_key_file,P_ENC_shared_mem_size_file,P_ENC_shared_mem_key_file,P_ENC_shared_mem_size_file,ENC_semaphore_p1_key_file,P_semaphore_p1_key_file);
         semaphore_signal(sem_ENC_p4_id);
         #if DEBUG >= 1
@@ -197,26 +202,4 @@ int P(char* read_shared_mem_key_file,int read_shared_mem_size_file,char* write_s
     #endif
 
     return 0;
-}
-
-int resend_message(char* shared_mem_key_file,int shared_mem_size_file){
-    int resend_flag=0;
-
-    //~~~~~~~~~~~~~~~~~~~memory~~~~~~~~~~~~~~~~~~~~~~~//
-    /* Attach the shared memory segment. */
-    int mem_seg_id=get_memory_id_from_file(shared_mem_key_file,shared_mem_size_file);
-    message* shared_memory = (message*) shmat(mem_seg_id, NULL, 0);
-    if(shared_memory==(void*)-1)die("shared memory ENC-write");
-
-    if(shared_memory->flag_checksum==1){
-        resend_flag=1;
-
-    }
-
-/* Detach the shared memory segment. */
-    shmdt(shared_memory);
-    #if DEBUG>= 2
-        cout<<"\t"<<getpid()<<" detached memory ENC_CHAN\n";
-    #endif
-    return resend_flag;
 }

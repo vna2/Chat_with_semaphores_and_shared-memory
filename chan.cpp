@@ -41,6 +41,9 @@ int main(int argc, char const *argv[]) {
         printf("~ %d releasing enc2 p2 %d\n", getpid(),sem_ENC2_p2_id);
     #endif
     semaphore_signal(sem_ENC2_p2_id);
+    if(if_term(CHAN_ENC_shared_mem_key_file,CHAN_ENC_shared_mem_size_file)==1){
+        return 0;
+    }
     cout<<"\n\n\n\n\n\n";
     #if DEBUG >= 1
         printf("~CHAN %d waiting message back ,%d\n", getpid(),sem_CHAN_p2_id);
@@ -93,6 +96,9 @@ int main(int argc, char const *argv[]) {
     #if DEBUG >= 1
         printf("~ ENC1 %d releasing p3 %d\n", getpid(),sem_ENC_p3_id);
     #endif
+    if(if_term(ENC_CHAN_shared_mem_key_file,ENC_CHAN_shared_mem_size_file)==1){
+        return 0;
+    }
     #if DEBUG >= 1
         printf("~CHAN %d waiting message back ,%d\n", getpid(),sem_CHAN_p4_id);
     #endif
@@ -175,14 +181,20 @@ int CHAN(int type,char* read_shared_mem_key_file, int read_shared_mem_size_file,
 
     //~~~~~~~~~~~~~~~CHANGE ON CHANEL~~~~~~~~~~~~~~~~//
     if(type==1){
-        srand(time(NULL));
-        int rand_num=(rand() % 3);
-        cout <<"\t\t\t\t\t\t\t\t" <<rand_num<<endl;
-        if(rand_num==2 && rand_number!=3){
-            strcpy(mess->message_arrey,"aaaaa");
-            rand_number=rand_num;
+        if(strcmp(mess->message_arrey,"TERM")==0){
+            #if DEBUG>= 3
+            cout << "\nTERM\n";
+            #endif
         }else{
-            rand_number=rand_num;
+            srand(time(NULL));
+            int rand_num=(rand() % 3);
+            cout <<"\t\t\t\t\t\t\t\t" <<rand_num<<endl;
+            if(rand_num==2 && rand_number!=3){
+                strcpy(mess->message_arrey,"aaaaa");
+                rand_number=rand_num;
+            }else{
+                rand_number=rand_num;
+            }
         }
 
     }
@@ -213,26 +225,4 @@ int CHAN(int type,char* read_shared_mem_key_file, int read_shared_mem_size_file,
         printf("~ write CHAN %d releasing %d\n", getpid(),sem_write_id);
     #endif
 
-}
-
-int resend_message(char* shared_mem_key_file,int shared_mem_size_file){
-    int resend_flag=0;
-
-    //~~~~~~~~~~~~~~~~~~~memory~~~~~~~~~~~~~~~~~~~~~~~//
-    /* Attach the shared memory segment. */
-    int mem_seg_id=get_memory_id_from_file(shared_mem_key_file,shared_mem_size_file);
-    message* shared_memory = (message*) shmat(mem_seg_id, NULL, 0);
-    if(shared_memory==(void*)-1)die("shared memory ENC-write");
-    //cout << "SHARED MEMORY ON RESEND MESSAGE FLAG "<<
-    if(shared_memory->flag_checksum==1){
-        resend_flag=1;
-
-    }
-
-/* Detach the shared memory segment. */
-    shmdt(shared_memory);
-    #if DEBUG>= 2
-        cout<<"\t"<<getpid()<<" detached memory ENC_CHAN\n";
-    #endif
-    return resend_flag;
 }
