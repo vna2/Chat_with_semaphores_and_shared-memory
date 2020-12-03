@@ -122,6 +122,7 @@ int main(int argc, char const *argv[]) {
         #endif
         semaphore_wait(sem_p2_p2_id);
         if(if_term(ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file)==1){
+            
             return 0;
         }
         P(ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,ENC2_semaphore_p1_key_file,P2_semaphore_p1_key_file);

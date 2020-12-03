@@ -1,5 +1,6 @@
 #ifndef SEMAPHORE_SHARED_MEM
 #define SEMAPHORE_SHARED_MEM
+#include "helping_functions.hpp"
 
 #define P_shared_mem_key_file "key/P-shared.mem.key"
 #define P_shared_mem_size_file sizeof(message*)
@@ -50,7 +51,6 @@
 
 
 
-#include "helping_functions.hpp"
 void die(char er[1000]);
 
 
@@ -154,13 +154,13 @@ int get_semaphore_id_from_file(char* file_name, unsigned int num=0){
 void initialise_semaphore(int sem_id){
     /*seting shemaphore to 0*/
     if(semctl(sem_id, 0 , SETVAL, 0) < 0) die("Could not set value of semaphore");
-    #if DEBUG >= 2
+    #if DEBUG >= 1
         else cout<<" and set to 1\n";
     #endif
 }
 
 static int semaphore_wait(int sem_id){
-    #if DEBUG  >= 3
+    #if DEBUG  >= 1
         cout<<"!! semaphore "<<sem_id<<"waiting!!\n";
     #endif
     struct sembuf sem_b;
@@ -175,7 +175,7 @@ static int semaphore_wait(int sem_id){
 }
 
 static int semaphore_signal(int sem_id){
-    #if DEBUG >= 3
+    #if DEBUG >= 1
         cout<<"!! semaphore "<<sem_id<<"releasing !! \n";
     #endif
     struct sembuf sem_b;
@@ -197,12 +197,12 @@ void clear_sem(char* sem_file, unsigned int num=0){
 
     /*deleting semaphore*/
     if (semctl(get_semaphore_id_from_file(final_file_name), 0, IPC_RMID) < 0)die("Could not delete semaphore");
-    #if DEBUG >= 2
+    #if DEBUG >= 1
         else cout<<"!! deleted semaphore!!\n";
     #endif
     //removing semaphore file
     if (unlink(final_file_name) < 0) die("Could not unlink key file");
-    #if DEBUG >= 2
+    #if DEBUG >= 1
         else printf("!! unlinked semaphore file!!\n");
     #endif
 }
@@ -372,6 +372,45 @@ void initialized_all_shared_memmory_semaphores(){
         initialise_semaphore(sem_resend_ENC2_p1);
 }
 
+void delete_semaphores_and_sheared_mem(){
+    clear_sem(P_semaphore_p1_key_file);
+    clear_sem(P_semaphore_p2_key_file);
+    clear_sem(P_semaphore_p3_key_file);
+    clear_sem(P_semaphore_p4_key_file);
+    clear_sem(P_semaphore_resend_p1_key_file);
+
+    clear_sem(ENC_semaphore_p1_key_file);
+    clear_sem(ENC_semaphore_p2_key_file);
+    clear_sem(ENC_semaphore_p3_key_file);
+    clear_sem(ENC_semaphore_p4_key_file);
+    clear_sem(ENC_semaphore_resend_p1_key_file);
+
+    clear_sem(CHAN_semaphore_p1_key_file);
+    clear_sem(CHAN_semaphore_p1_key_file);
+    clear_sem(CHAN_semaphore_p1_key_file);
+    clear_sem(CHAN_semaphore_p1_key_file);
+    clear_sem(CHAN_semaphore_resend_p1_key_file);
+
+    clear_sem(ENC2_semaphore_p1_key_file);
+    clear_sem(ENC2_semaphore_p2_key_file);
+    clear_sem(ENC2_semaphore_p3_key_file);
+    clear_sem(ENC2_semaphore_p4_key_file);
+    clear_sem(ENC2_semaphore_resend_p1_key_file);
+
+    clear_sem(P2_semaphore_p1_key_file);
+    clear_sem(P2_semaphore_p2_key_file);
+    clear_sem(P2_semaphore_p3_key_file);
+    clear_sem(P2_semaphore_p4_key_file);
+    clear_sem(P2_semaphore_resend_p1_key_file);
+
+    // clear_mem(P_shared_mem_key_file, P_shared_mem_size_file);
+    // clear_mem(P_ENC_shared_mem_key_file, P_ENC_shared_mem_size_file);
+    // clear_mem(ENC_CHAN_shared_mem_key_file, ENC_CHAN_shared_mem_size_file);
+    // clear_mem(CHAN_ENC_shared_mem_key_file, CHAN_ENC_shared_mem_size_file);
+    // clear_mem(ENC_P2_shared_mem_key_file, ENC_P2_shared_mem_size_file);
+    // clear_mem(P2_shared_mem_key_file, P2_shared_mem_size_file);
+
+}
 
 
 

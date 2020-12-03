@@ -17,6 +17,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include <string.h>
+#include <limits>
 
 #include "semaphores_sheared_mem.hpp"
 #include "md5/md5.h"
