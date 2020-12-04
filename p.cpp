@@ -116,9 +116,9 @@ int main(int argc, char const *argv[]) {
         //THIS IS P2 MESSAGE
         #endif
         #if DEBUG >= 1
-            printf("~P1 %d waiting p3 %d\n", getpid(),sem_p_p3_id);
+            printf("~P1 %d waiting p3 %d\n", getpid(),sem_p_p2_id);
         #endif
-        semaphore_wait(sem_p_p3_id);
+        semaphore_wait(sem_p_p2_id);
         if(if_term(P_ENC_shared_mem_key_file,P_ENC_shared_mem_size_file)==1){
             cout << "Exit program deleting memmory and semaphores" <<endl;
             delete_semaphores_and_sheared_mem();
