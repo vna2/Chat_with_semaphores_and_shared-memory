@@ -144,9 +144,9 @@ int main(int argc, char const *argv[]){
     }
     cout << "Waiting message back\n";
     #if DEBUG >= 1
-        printf("~ENC %d waiting message back ,%d\n", getpid(),sem_ENC_p4_id);
+        printf("~ENC %d waiting message back ,%d\n", getpid(),sem_ENC_p3_id);
     #endif
-    semaphore_wait(sem_ENC_p4_id);
+    semaphore_wait(sem_ENC_p3_id);
     cout << "Message arived: ";print_message_sh_mem(P_ENC_shared_mem_key_file,P_ENC_shared_mem_size_file);cout <<" with checksum: ";print_message_checksum(P_ENC_shared_mem_key_file,P_ENC_shared_mem_size_file);
     ENC_job(1,P_ENC_shared_mem_key_file,P_ENC_shared_mem_size_file);
     ENC(P_ENC_shared_mem_key_file,P_ENC_shared_mem_size_file,ENC_CHAN_shared_mem_key_file,ENC_CHAN_shared_mem_size_file,CHAN_semaphore_p1_key_file,ENC_semaphore_p1_key_file);
