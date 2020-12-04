@@ -13,7 +13,6 @@ int main(int argc, char const *argv[]){
 
     int sem_ENC2_p2_id = get_semaphore_id_from_file(ENC2_semaphore_p2_key_file);
     int sem_ENC2_p3_id = get_semaphore_id_from_file(ENC2_semaphore_p3_key_file);
-    int sem_ENC2_p4_id = get_semaphore_id_from_file(ENC2_semaphore_p4_key_file);
     int sem_CHAN_resend_p1_id = get_semaphore_id_from_file(CHAN_semaphore_resend_p1_key_file);
     int sem_ENC2_resend_p1_id = get_semaphore_id_from_file(ENC2_semaphore_resend_p1_key_file);
 
@@ -107,9 +106,9 @@ int main(int argc, char const *argv[]){
     }
     cout << "Waiting message back\n";
     #if DEBUG >= 1
-        printf("~ENC2 %d waiting message back ,%d\n", getpid(),sem_ENC2_p4_id);
+        printf("~ENC2 %d waiting message back ,%d\n", getpid(),sem_ENC2_p3_id);
     #endif
-    semaphore_wait(sem_ENC2_p4_id);
+    semaphore_wait(sem_ENC2_p3_id);
     if(resend_message(CHAN_ENC_shared_mem_key_file,CHAN_ENC_shared_mem_size_file)==1){
         resend_flag=1;
         #if DEBUG >= 2
@@ -145,9 +144,9 @@ int main(int argc, char const *argv[]){
     if(resend_flag==1){
         cout << "Waiting message back\n";
         #if DEBUG >= 1
-            printf("~ENC %d waiting message back ,%d\n", getpid(),sem_ENC2_p4_id);
+            printf("~ENC %d waiting message back ,%d\n", getpid(),sem_ENC2_p3_id);
         #endif
-        semaphore_wait(sem_ENC2_p4_id);
+        semaphore_wait(sem_ENC2_p3_id);
         resend_flag=0;
     }
     cout << "Message arived: ";print_message_sh_mem(CHAN_ENC_shared_mem_key_file,CHAN_ENC_shared_mem_size_file); cout <<" with checksum: ";print_message_checksum(CHAN_ENC_shared_mem_key_file,CHAN_ENC_shared_mem_size_file);
