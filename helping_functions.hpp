@@ -175,26 +175,22 @@ void print_message_checksum(char* shared_mem_key_file,int shared_mem_size_file){
 void delete_semaphores_and_sheared_mem(){
     int sem_p_p1_id = get_semaphore_id_from_file(P_semaphore_p1_key_file);
     int sem_p_p2_id = get_semaphore_id_from_file(P_semaphore_p2_key_file);
-    int sem_p_p3_id = get_semaphore_id_from_file(P_semaphore_p3_key_file);
     int sem_p_p4_id = get_semaphore_id_from_file(P_semaphore_p4_key_file);
 
     int sem_ENC_resend_p1_id = get_semaphore_id_from_file(ENC_semaphore_resend_p1_key_file);
     int sem_ENC_p1_id = get_semaphore_id_from_file(ENC_semaphore_p1_key_file);
     int sem_ENC_p2_id = get_semaphore_id_from_file(ENC_semaphore_p2_key_file);
     int sem_ENC_p3_id = get_semaphore_id_from_file(ENC_semaphore_p3_key_file);
-    int sem_ENC_p4_id = get_semaphore_id_from_file(ENC_semaphore_p4_key_file);
 
     int sem_CHAN_resend_p1_id = get_semaphore_id_from_file(CHAN_semaphore_resend_p1_key_file);
     int sem_CHAN_p1_id = get_semaphore_id_from_file(CHAN_semaphore_p1_key_file);
     int sem_CHAN_p2_id = get_semaphore_id_from_file(CHAN_semaphore_p2_key_file);
-    int sem_CHAN_p4_id = get_semaphore_id_from_file(CHAN_semaphore_p4_key_file);
     int sem_CHAN_p3_id = get_semaphore_id_from_file(CHAN_semaphore_p3_key_file);
 
     int sem_ENC2_resend_p1_id = get_semaphore_id_from_file(ENC2_semaphore_resend_p1_key_file);
     int sem_ENC2_p1_id = get_semaphore_id_from_file(ENC2_semaphore_p1_key_file);
     int sem_ENC2_p2_id = get_semaphore_id_from_file(ENC2_semaphore_p2_key_file);
     int sem_ENC2_p3_id = get_semaphore_id_from_file(ENC2_semaphore_p3_key_file);
-    int sem_ENC2_p4_id = get_semaphore_id_from_file(ENC2_semaphore_p4_key_file);
 
     int sem_p2_p1_id = get_semaphore_id_from_file(P2_semaphore_p1_key_file);
     int sem_p2_p2_id = get_semaphore_id_from_file(P2_semaphore_p2_key_file);
@@ -203,25 +199,21 @@ void delete_semaphores_and_sheared_mem(){
 
     clear_sem(P_semaphore_p1_key_file);
     clear_sem(P_semaphore_p2_key_file);
-    clear_sem(P_semaphore_p3_key_file);
     clear_sem(P_semaphore_p4_key_file);
 
     clear_sem(ENC_semaphore_p1_key_file);
     clear_sem(ENC_semaphore_p2_key_file);
     clear_sem(ENC_semaphore_p3_key_file);
-    clear_sem(ENC_semaphore_p4_key_file);
     clear_sem(ENC_semaphore_resend_p1_key_file);
 
     clear_sem(CHAN_semaphore_p1_key_file);
     clear_sem(CHAN_semaphore_p2_key_file);
     clear_sem(CHAN_semaphore_p3_key_file);
-    clear_sem(CHAN_semaphore_p4_key_file);
     clear_sem(CHAN_semaphore_resend_p1_key_file);
 
     clear_sem(ENC2_semaphore_p1_key_file);
     clear_sem(ENC2_semaphore_p2_key_file);
     clear_sem(ENC2_semaphore_p3_key_file);
-    clear_sem(ENC2_semaphore_p4_key_file);
     clear_sem(ENC2_semaphore_resend_p1_key_file);
 
     clear_sem(P2_semaphore_p1_key_file);

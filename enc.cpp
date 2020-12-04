@@ -10,12 +10,10 @@ int main(int argc, char const *argv[]){
     int sem_ENC_resend_p1_id = get_semaphore_id_from_file(ENC_semaphore_resend_p1_key_file);
     int sem_ENC_p2_id = get_semaphore_id_from_file(ENC_semaphore_p2_key_file);
     int sem_ENC_p3_id = get_semaphore_id_from_file(ENC_semaphore_p3_key_file);
-    int sem_ENC_p4_id = get_semaphore_id_from_file(ENC_semaphore_p4_key_file);
 
     int sem_CHAN_resend_p1_id = get_semaphore_id_from_file(CHAN_semaphore_resend_p1_key_file);
 
     int sem_p_p2_id  = get_semaphore_id_from_file(P_semaphore_p2_key_file);
-    int sem_p_p3_id  = get_semaphore_id_from_file(P_semaphore_p3_key_file);
     int sem_CHAN_p3_id = get_semaphore_id_from_file(CHAN_semaphore_p3_key_file);
     int sem_CHAN_p2_id = get_semaphore_id_from_file(CHAN_semaphore_p2_key_file);
 
