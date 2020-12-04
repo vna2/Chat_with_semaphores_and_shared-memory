@@ -218,6 +218,7 @@ void initialized_all_shared_memmory_semaphores(){
         key_t CHAN_ENC_shared_mem_size =ftok("p.o",6);
         key_t ENC_P2_shared_mem_key =ftok("p.o",7);
         key_t ENC_P2_shared_mem_size =ftok("p.o",8);
+
         key_t P_shared_mem_key =ftok("p.o",9);
         key_t P_shared_mem_size =ftok("p.o",10);
         key_t P2_shared_mem_key =ftok("p.o",11);
@@ -227,7 +228,6 @@ void initialized_all_shared_memmory_semaphores(){
         key_t P_semaphore_p2_key =ftok("p.o",14);
         key_t P_semaphore_p3_key =ftok("p.o",15);
         key_t P_semaphore_p4_key =ftok("p.o",32);
-        key_t P_semaphore_resend_p1_key =ftok("p.o",33);
 
         key_t ENC_semaphore_p1_key =ftok("p.o",16);
         key_t ENC_semaphore_p2_key =ftok("p.o",17);
@@ -253,7 +253,6 @@ void initialized_all_shared_memmory_semaphores(){
         key_t P2_semaphore_p2_key =ftok("p.o",29);
         key_t P2_semaphore_p3_key =ftok("p.o",30);
         key_t P2_semaphore_p4_key =ftok("p.o",31);
-        key_t P2_semaphore_resend_p1_key =ftok("p.o",37);
 
 
 
@@ -322,8 +321,7 @@ void initialized_all_shared_memmory_semaphores(){
         initialise_semaphore(sem_P_p3);
         int sem_P_p4=generate_semaphore(P_semaphore_p4_key, P_semaphore_p4_key_file);
         initialise_semaphore(sem_P_p4);
-        int sem_resend_P_p1=generate_semaphore(P_semaphore_resend_p1_key, P_semaphore_resend_p1_key_file);
-        initialise_semaphore(sem_resend_P_p1);
+
 
 
         int sem_ENC_p1=generate_semaphore(ENC_semaphore_p1_key, ENC_semaphore_p1_key_file);
@@ -364,53 +362,12 @@ void initialized_all_shared_memmory_semaphores(){
         initialise_semaphore(sem_P2_p1);
         int sem_P2_p2=generate_semaphore(P2_semaphore_p2_key, P2_semaphore_p2_key_file);
         initialise_semaphore(sem_P2_p2);
-        int sem_P2_p3=generate_semaphore(P2_semaphore_p3_key, P2_semaphore_p3_key_file);
-        initialise_semaphore(sem_P2_p3);
         int sem_P2_p4=generate_semaphore(P2_semaphore_p4_key, P2_semaphore_p4_key_file);
         initialise_semaphore(sem_P2_p4);
-        int sem_resend_P2_p1=generate_semaphore(P2_semaphore_resend_p1_key, P2_semaphore_resend_p1_key_file);
-        initialise_semaphore(sem_resend_ENC2_p1);
-}
-
-void delete_semaphores_and_sheared_mem(){
-    clear_sem(P_semaphore_p1_key_file);
-    clear_sem(P_semaphore_p2_key_file);
-    clear_sem(P_semaphore_p3_key_file);
-    clear_sem(P_semaphore_p4_key_file);
-    clear_sem(P_semaphore_resend_p1_key_file);
-
-    clear_sem(ENC_semaphore_p1_key_file);
-    clear_sem(ENC_semaphore_p2_key_file);
-    clear_sem(ENC_semaphore_p3_key_file);
-    clear_sem(ENC_semaphore_p4_key_file);
-    clear_sem(ENC_semaphore_resend_p1_key_file);
-
-    clear_sem(CHAN_semaphore_p1_key_file);
-    clear_sem(CHAN_semaphore_p1_key_file);
-    clear_sem(CHAN_semaphore_p1_key_file);
-    clear_sem(CHAN_semaphore_p1_key_file);
-    clear_sem(CHAN_semaphore_resend_p1_key_file);
-
-    clear_sem(ENC2_semaphore_p1_key_file);
-    clear_sem(ENC2_semaphore_p2_key_file);
-    clear_sem(ENC2_semaphore_p3_key_file);
-    clear_sem(ENC2_semaphore_p4_key_file);
-    clear_sem(ENC2_semaphore_resend_p1_key_file);
-
-    clear_sem(P2_semaphore_p1_key_file);
-    clear_sem(P2_semaphore_p2_key_file);
-    clear_sem(P2_semaphore_p3_key_file);
-    clear_sem(P2_semaphore_p4_key_file);
-    clear_sem(P2_semaphore_resend_p1_key_file);
-
-    // clear_mem(P_shared_mem_key_file, P_shared_mem_size_file);
-    // clear_mem(P_ENC_shared_mem_key_file, P_ENC_shared_mem_size_file);
-    // clear_mem(ENC_CHAN_shared_mem_key_file, ENC_CHAN_shared_mem_size_file);
-    // clear_mem(CHAN_ENC_shared_mem_key_file, CHAN_ENC_shared_mem_size_file);
-    // clear_mem(ENC_P2_shared_mem_key_file, ENC_P2_shared_mem_size_file);
-    // clear_mem(P2_shared_mem_key_file, P2_shared_mem_size_file);
 
 }
+
+
 
 
 
