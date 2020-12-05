@@ -191,7 +191,7 @@ int ENC(char* read_shared_mem_key_file,int read_shared_mem_size_file,char* write
     shared_memory_read->checksum[33]='\0';
     strcpy(mess->checksum,shared_memory_read->checksum);
 
-    #if DEBUG >=0
+    #if DEBUG >=3
         printf ("\t- shared memory read_ENC2"); shared_memory_read->print();
     #endif
 
@@ -222,7 +222,7 @@ int ENC(char* read_shared_mem_key_file,int read_shared_mem_size_file,char* write
     strcpy(shared_memory_write->checksum,mess->checksum);
     shared_memory_write->checksum[33]='\0';
     shared_memory_write->flag_checksum= mess->flag_checksum;
-    #if DEBUG >= 0
+    #if DEBUG >= 3
         printf ("\t- shared memory write_ENC2"); shared_memory_write->print();
     #endif
 

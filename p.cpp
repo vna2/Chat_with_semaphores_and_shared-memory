@@ -15,14 +15,14 @@ int main(int argc, char const *argv[]) {
     initialized_all_shared_memmory_semaphores();
     char* temp[5];
     int status =0;
-    for (size_t i = 0; i < 5; i++) {
-        temp[i] = new char;
-    }
-    strcpy(temp[0], "P1-hola bitch");
-    strcpy(temp[1], "P1-hola bitch1"); //P1-hola bitch1
-    strcpy(temp[2], "P1-hola bitch2");
-    strcpy(temp[3], "P1-hola bitch3");
-    strcpy(temp[4], "TERM");
+    // for (size_t i = 0; i < 5; i++) {
+    //     argv[i+1] = new char;
+    // }
+    // strcpy(temp[0], "P1-hola bitch");
+    // strcpy(temp[1], "P1-hola bitch1"); //P1-hola bitch1
+    // strcpy(temp[2], "P1-hola bitch2");
+    // strcpy(temp[3], "P1-hola bitch3");
+    // strcpy(temp[4], "TERM");
 
 
     //~~~~~~~~~~~~~~~~~~~memory~~~~~~~~~~~~~~~~~~~~~~~//
@@ -33,8 +33,13 @@ int main(int argc, char const *argv[]) {
     int sem_p_p4_id = get_semaphore_id_from_file(P_semaphore_p4_key_file);
     int sem_p2_p4_id = get_semaphore_id_from_file(P2_semaphore_p4_key_file);
     int sem_ENC_p2_id = get_semaphore_id_from_file(ENC_semaphore_p2_key_file);
+    if(argc==1){
+        cout << "Exit program\n";
+        delete_semaphores_and_sheared_mem();
+        return 0;
+    }
 
-    for (size_t i = 0; i <4; i++) {
+    for (size_t i = 0; i <argc; i++) {
         //P1 SENDING MESSAGE
         cout<<"\n\n";
         cout << "P1 message\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n";
@@ -45,7 +50,7 @@ int main(int argc, char const *argv[]) {
         #if DEBUG >= 2
             printf ("! shared memory attached at address %p\n", shared_memory);
         #endif
-        strcpy(shared_memory->message_arrey,temp[i]);
+        strcpy(shared_memory->message_arrey,argv[i+1]);
         //~~~~~~~~~~~~~~~~~~~clears~~~~~~~~~~~~~~~~~~~~~~~//
         /* Detach the shared memory segment. */
         shmdt(shared_memory);
@@ -62,7 +67,9 @@ int main(int argc, char const *argv[]) {
         #if DEBUG >= 1
             printf("~ %d releasing ENC p2 %d\n", getpid(),sem_ENC_p2_id);
         #endif
-        if(strcmp(temp[i],"TERM")==0){
+        if(strcmp(argv[i+1],"TERM")==0){
+            cout << "Exit program\n";
+            delete_semaphores_and_sheared_mem();
             return 1;
         }
         cout << "Waiting message back\n";
@@ -80,7 +87,7 @@ int main(int argc, char const *argv[]) {
             #if DEBUG >= 2
                 printf ("! shared memory attached at address %p\n", shared_memory_resend);
             #endif
-            strcpy(shared_memory_resend->message_arrey,temp[i]);
+            strcpy(shared_memory_resend->message_arrey,argv[i+1]);
             //~~~~~~~~~~~~~~~~~~~clears~~~~~~~~~~~~~~~~~~~~~~~//
             /* Detach the shared memory segment. */
             shmdt(shared_memory_resend);
@@ -179,7 +186,7 @@ int P(char* read_shared_mem_key_file,int read_shared_mem_size_file,char* write_s
     //~~~~~~~~~~~~~~~~~~~~~~~~~READ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
     message* mess = new message(shared_memory_read->message_arrey);
-    #if DEBUG >= 0
+    #if DEBUG >= 3
         printf ("\t- shared memory read_P"); mess->print();
     #endif
 
@@ -196,7 +203,7 @@ int P(char* read_shared_mem_key_file,int read_shared_mem_size_file,char* write_s
 
     strcpy(shared_memory_write->message_arrey,shared_memory_read->message_arrey);
     shared_memory_write->flag_checksum=mess->flag_checksum;
-    #if DEBUG >= 0
+    #if DEBUG >= 3
         printf ("\t- shared memory write_P"); shared_memory_write->print();
     #endif
 

@@ -10,13 +10,13 @@ int main(int argc, char const *argv[]) {
 
     char* temp[5];
     int status =0;
-    for (size_t i = 0; i < 5; i++) {
-        temp[i] = new char;
-    }
-    strcpy(temp[0], "P2-hola bitch");
-    strcpy(temp[1], "P2-hola bitch1");//
-    strcpy(temp[2], "P2-hola bitch2");
-    strcpy(temp[3], "TERM");
+    // for (size_t i = 0; i < 5; i++) {
+    //     argv[i+1] = new char;
+    // }
+    // strcpy(temp[0], "P2-hola bitch");
+    // strcpy(temp[1], "P2-hola bitch1");//
+    // strcpy(temp[2], "P2-hola bitch2");
+    // strcpy(temp[3], "TERM");
 
     int sem_ENC2_p2_id = get_semaphore_id_from_file(ENC2_semaphore_p2_key_file);
     int sem_p2_p1_id = get_semaphore_id_from_file(P2_semaphore_p1_key_file);
@@ -40,7 +40,11 @@ int main(int argc, char const *argv[]) {
     cout << "Message arived : ";print_message_sh_mem(ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file); cout <<" with checksum: ";print_message_checksum(ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file);
     P(ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,ENC2_semaphore_p1_key_file,P2_semaphore_p1_key_file);
     cout << "Message Send : ";print_message_sh_mem(ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file); cout <<" with checksum: ";print_message_checksum(ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file);
-
+    if(argc==1){
+        cout << "Exit program\n";
+        delete_semaphores_and_sheared_mem();
+        return 0;
+    }
     semaphore_signal(sem_ENC2_p2_id);
     #if DEBUG >= 1
         printf("~ ENC2 %d releasing %d\n", getpid(),sem_ENC2_p2_id);
@@ -50,7 +54,7 @@ int main(int argc, char const *argv[]) {
     printf("~P %d waiting from P1 to start sending message %d\n", getpid(),sem_p2_p4_id);
     #endif
     semaphore_wait(sem_p2_p4_id);
-    for (size_t i = 0; i <4; i++) {
+    for (size_t i = 0; i <argc; i++) {
         cout<<"\n\n";
         cout << "P2 message\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n";
         int mem_seg_id=get_memory_id_from_file(P2_shared_mem_key_file,P2_shared_mem_size_file);
@@ -59,7 +63,7 @@ int main(int argc, char const *argv[]) {
         #if DEBUG >= 2
             printf ("! shared memory attached at address %p\n", shared_memory);
         #endif
-        strcpy(shared_memory->message_arrey,temp[i]);
+        strcpy(shared_memory->message_arrey,argv[i+1]);
         //~~~~~~~~~~~~~~~~~~~clears~~~~~~~~~~~~~~~~~~~~~~~//
         /* Detach the shared memory segment. */
         shmdt(shared_memory);
@@ -76,7 +80,7 @@ int main(int argc, char const *argv[]) {
         #if DEBUG >= 1
             printf("~ P2 %d releasing p3 %d\n", getpid(),sem_ENC2_p2_id);
         #endif
-        if(strcmp(temp[i],"TERM")==0){
+        if(strcmp(argv[i+1],"TERM")==0){
             cout<< "Exit program\n";
             return 1;
         }
@@ -93,7 +97,7 @@ int main(int argc, char const *argv[]) {
             #if DEBUG >= 2
                 printf ("! shared memory attached at address %p\n", shared_memory_resend);
             #endif
-            strcpy(shared_memory_resend->message_arrey,temp[i]);
+            strcpy(shared_memory_resend->message_arrey,argv[i+1]);
             //~~~~~~~~~~~~~~~~~~~clears~~~~~~~~~~~~~~~~~~~~~~~//
             /* Detach the shared memory segment. */
             shmdt(shared_memory_resend);
@@ -187,7 +191,7 @@ int P(char* read_shared_mem_key_file,int read_shared_mem_size_file,char* write_s
     //~~~~~~~~~~~~~~~~~~~~~~~~~READ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
     message* mess = new message(shared_memory_read->message_arrey);
-    #if DEBUG >= 0
+    #if DEBUG >= 3
         printf ("\t- shared memory read_P"); mess->print();
     #endif
 
@@ -205,7 +209,7 @@ int P(char* read_shared_mem_key_file,int read_shared_mem_size_file,char* write_s
 
     strcpy(shared_memory_write->message_arrey,shared_memory_read->message_arrey);
     shared_memory_write->flag_checksum=mess->flag_checksum;
-    #if DEBUG >= 0
+    #if DEBUG >= 3
         printf ("\t- shared memory write_P"); shared_memory_write->print();
     #endif
 

@@ -187,7 +187,7 @@ int CHAN(int type,char* read_shared_mem_key_file, int read_shared_mem_size_file,
     strcpy(mess->checksum,shared_memory_read->checksum);
     shared_memory_read->checksum[33]='\0';
     mess->flag_checksum= shared_memory_read->flag_checksum;
-    #if DEBUG >= 0
+    #if DEBUG >= 3
         printf ("\t- shared memory read_ENC"); mess->print();
     #endif
     /* Detach the shared memory segment. */
@@ -229,7 +229,7 @@ int CHAN(int type,char* read_shared_mem_key_file, int read_shared_mem_size_file,
     strcpy(shared_memory_write->checksum,mess->checksum);
     shared_memory_write->checksum[33]='\0';
     shared_memory_write->flag_checksum = mess->flag_checksum;
-    #if DEBUG >= 0
+    #if DEBUG >= 3
         printf ("\t- shared memory write_CHAN"); shared_memory_write->print();
     #endif
 
