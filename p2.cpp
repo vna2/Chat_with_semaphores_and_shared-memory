@@ -24,7 +24,6 @@ int main(int argc, char const *argv[]) {
     int sem_p2_p4_id = get_semaphore_id_from_file(P2_semaphore_p4_key_file);
     int sem_p1_p4_id = get_semaphore_id_from_file(P_semaphore_p4_key_file);
 
-    int sem_ENC2_p3_id = get_semaphore_id_from_file(ENC2_semaphore_p3_key_file);
     int sem_ENC2_resend_p1_id = get_semaphore_id_from_file(ENC2_semaphore_resend_p1_key_file);
 
     #if DEBUG >= 1
@@ -73,9 +72,9 @@ int main(int argc, char const *argv[]) {
         #endif
         P(P2_shared_mem_key_file,P2_shared_mem_size_file,ENC_P2_shared_mem_key_file,ENC_P2_shared_mem_size_file,ENC2_semaphore_p1_key_file,P2_semaphore_p1_key_file);
         cout << "Message send: ";print_message_sh_mem(P2_shared_mem_key_file,P_shared_mem_size_file);
-        semaphore_signal(sem_ENC2_p3_id);
+        semaphore_signal(sem_ENC2_p2_id);
         #if DEBUG >= 1
-            printf("~ P2 %d releasing p3 %d\n", getpid(),sem_ENC2_p3_id);
+            printf("~ P2 %d releasing p3 %d\n", getpid(),sem_ENC2_p2_id);
         #endif
         if(strcmp(temp[i],"TERM")==0){
             cout<< "Exit program\n";

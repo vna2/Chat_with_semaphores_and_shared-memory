@@ -15,11 +15,8 @@ int main(int argc, char const *argv[]) {
     int sem_ENC2_resend_p1_id = get_semaphore_id_from_file(ENC2_semaphore_resend_p1_key_file);
 
     int sem_CHAN_p2_id = get_semaphore_id_from_file(CHAN_semaphore_p2_key_file);
-    int sem_CHAN_p3_id = get_semaphore_id_from_file(CHAN_semaphore_p3_key_file);
     int sem_ENC_p2_id = get_semaphore_id_from_file(ENC_semaphore_p2_key_file);
-    int sem_ENC_p3_id = get_semaphore_id_from_file(ENC_semaphore_p3_key_file);
     int sem_ENC2_p2_id = get_semaphore_id_from_file(ENC2_semaphore_p2_key_file);
-    int sem_ENC2_p3_id = get_semaphore_id_from_file(ENC2_semaphore_p3_key_file);
 
 
 
@@ -96,16 +93,16 @@ int main(int argc, char const *argv[]) {
     cout<<"\n\n";
     cout << "P2 message\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n";
     #if DEBUG >= 1
-        printf("~ENC2 %d waiting p3 %d\n", getpid(),sem_CHAN_p3_id);
+        printf("~ENC2 %d waiting p3 %d\n", getpid(),sem_CHAN_p2_id);
     #endif
-    semaphore_wait(sem_CHAN_p3_id);
+    semaphore_wait(sem_CHAN_p2_id);
     cout << "Message arived: ";print_message_sh_mem(CHAN_ENC_shared_mem_key_file,CHAN_ENC_shared_mem_size_file); cout <<" with checksum: ";print_message_checksum(CHAN_ENC_shared_mem_key_file,CHAN_ENC_shared_mem_size_file);
     CHAN(1,CHAN_ENC_shared_mem_key_file,CHAN_ENC_shared_mem_size_file,ENC_CHAN_shared_mem_key_file,ENC_CHAN_shared_mem_size_file,ENC_semaphore_p1_key_file,CHAN_semaphore_p1_key_file);
     cout << "Message send: ";print_message_sh_mem(ENC_CHAN_shared_mem_key_file,ENC_CHAN_shared_mem_size_file); cout <<" with checksum: ";print_message_checksum(ENC_CHAN_shared_mem_key_file,ENC_CHAN_shared_mem_size_file);
 
-    semaphore_signal(sem_ENC_p3_id);
+    semaphore_signal(sem_ENC_p2_id);
     #if DEBUG >= 1
-        printf("~ ENC1 %d releasing p3 %d\n", getpid(),sem_ENC_p3_id);
+        printf("~ ENC1 %d releasing p3 %d\n", getpid(),sem_ENC_p2_id);
     #endif
     if(if_term(ENC_CHAN_shared_mem_key_file,ENC_CHAN_shared_mem_size_file)==1){
         cout << "Exit program\n";
@@ -113,18 +110,18 @@ int main(int argc, char const *argv[]) {
     }
     cout << "Waiting message back\n";
     #if DEBUG >= 1
-        printf("~CHAN %d waiting message back ,%d\n", getpid(),sem_CHAN_p3_id);
+        printf("~CHAN %d waiting message back ,%d\n", getpid(),sem_CHAN_p2_id);
     #endif
-    semaphore_wait(sem_CHAN_p3_id);
+    semaphore_wait(sem_CHAN_p2_id);
     if(resend_message(CHAN_ENC_shared_mem_key_file,CHAN_ENC_shared_mem_size_file)==1){
         cout<< "Resend message \n";
         resend_flag=1;
         cout << "Message arived: ";print_message_sh_mem(ENC_CHAN_shared_mem_key_file,ENC_CHAN_shared_mem_size_file); cout <<" with checksum: ";print_message_checksum(ENC_CHAN_shared_mem_key_file,ENC_CHAN_shared_mem_size_file);
         CHAN(0,ENC_CHAN_shared_mem_key_file,ENC_CHAN_shared_mem_size_file,CHAN_ENC_shared_mem_key_file,CHAN_ENC_shared_mem_size_file,ENC2_semaphore_p1_key_file,CHAN_semaphore_p1_key_file);
         cout << "Message send: ";print_message_sh_mem(CHAN_ENC_shared_mem_key_file,CHAN_ENC_shared_mem_size_file); cout <<" with checksum: ";print_message_checksum(CHAN_ENC_shared_mem_key_file,CHAN_ENC_shared_mem_size_file);
-        semaphore_signal(sem_ENC2_p3_id);
+        semaphore_signal(sem_ENC2_p2_id);
         #if DEBUG >= 1
-        printf("~ CHAN %d releasing Resend %d\n", getpid(),sem_ENC2_p3_id);
+        printf("~ CHAN %d releasing Resend %d\n", getpid(),sem_ENC2_p2_id);
         #endif
         cout << "Waiting message back\n";
         #if DEBUG >= 1
@@ -143,18 +140,18 @@ int main(int argc, char const *argv[]) {
     if(resend_flag==1){
         cout << "Waiting message back\n";
         #if DEBUG >= 1
-            printf("~CHAN %d waiting message back ,%d\n", getpid(),sem_CHAN_p3_id);
+            printf("~CHAN %d waiting message back ,%d\n", getpid(),sem_CHAN_p2_id);
         #endif
-        semaphore_wait(sem_CHAN_p3_id);
+        semaphore_wait(sem_CHAN_p2_id);
         resend_flag=0;
     }
     cout << "Message arived: ";print_message_sh_mem(ENC_CHAN_shared_mem_key_file,ENC_CHAN_shared_mem_size_file); cout <<" with checksum: ";print_message_checksum(ENC_CHAN_shared_mem_key_file,ENC_CHAN_shared_mem_size_file);
     CHAN(0,ENC_CHAN_shared_mem_key_file,ENC_CHAN_shared_mem_size_file,CHAN_ENC_shared_mem_key_file,CHAN_ENC_shared_mem_size_file,ENC2_semaphore_p1_key_file,CHAN_semaphore_p1_key_file);
     cout << "Message send: ";print_message_sh_mem(CHAN_ENC_shared_mem_key_file,CHAN_ENC_shared_mem_size_file); cout <<" with checksum: ";print_message_checksum(CHAN_ENC_shared_mem_key_file,CHAN_ENC_shared_mem_size_file);
 
-    semaphore_signal(sem_ENC2_p3_id);
+    semaphore_signal(sem_ENC2_p2_id);
     #if DEBUG >= 1
-        printf("~ ENC2 %d releasing p4 %d\n", getpid(),sem_ENC2_p3_id);
+        printf("~ ENC2 %d releasing p4 %d\n", getpid(),sem_ENC2_p2_id);
     #endif
 
 }
