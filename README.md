@@ -8,6 +8,7 @@ enc2 is a check sum process to check if message send and resend for p1
 p2 is the second person in chat
 Messages past through arguments at p1-p2.
  
+![GitHub Logo](read me image/Screenshot from 2020-12-15 19-14-23.png)
 Compile: make && mkdir key
 Delete: make clean
 Execution: Open five terminals. ./p1 This is a message from p1 TERM , ./enc , ./chan , ./enc2 , p2 THIS IS A MESSAGE FROM p2 TERM
