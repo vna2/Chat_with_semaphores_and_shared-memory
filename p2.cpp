@@ -9,15 +9,7 @@ int main(int argc, char const *argv[]) {
     int resend_flag=0;
 
     char* temp[5];
-    int status =0;
-    // for (size_t i = 0; i < 5; i++) {
-    //     argv[i+1] = new char;
-    // }
-    // strcpy(temp[0], "P2-hola bitch");
-    // strcpy(temp[1], "P2-hola bitch1");//
-    // strcpy(temp[2], "P2-hola bitch2");
-    // strcpy(temp[3], "TERM");
-
+    
     int sem_ENC2_p2_id = get_semaphore_id_from_file(ENC2_semaphore_p2_key_file);
     int sem_p2_p1_id = get_semaphore_id_from_file(P2_semaphore_p1_key_file);
     int sem_p2_p2_id = get_semaphore_id_from_file(P2_semaphore_p2_key_file);

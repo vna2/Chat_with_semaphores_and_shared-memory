@@ -15,14 +15,6 @@ int main(int argc, char const *argv[]) {
     initialized_all_shared_memmory_semaphores();
     char* temp[5];
     int status =0;
-    // for (size_t i = 0; i < 5; i++) {
-    //     argv[i+1] = new char;
-    // }
-    // strcpy(temp[0], "P1-hola bitch");
-    // strcpy(temp[1], "P1-hola bitch1"); //P1-hola bitch1
-    // strcpy(temp[2], "P1-hola bitch2");
-    // strcpy(temp[3], "P1-hola bitch3");
-    // strcpy(temp[4], "TERM");
 
 
     //~~~~~~~~~~~~~~~~~~~memory~~~~~~~~~~~~~~~~~~~~~~~//
