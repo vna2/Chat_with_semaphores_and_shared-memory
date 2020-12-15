@@ -7,6 +7,7 @@ chan is a process with rand that can change the message (noise)
 enc2 is a check sum process to check if message send and resend for p1
 p2 is the second person in chat
 Messages past through arguments at p1-p2.
+
 ![Optional Text](../Chat_with_semaphores_and_shared-memory/read me image/Screenshot from 2020-12-15 19-14-23.png)
 
 Compile: make && mkdir key
