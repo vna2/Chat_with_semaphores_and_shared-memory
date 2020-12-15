@@ -68,3 +68,4 @@ p2.o: p2.cpp
 
 clean:
 	rm -f $(OBJS) $(OUT)
+	
