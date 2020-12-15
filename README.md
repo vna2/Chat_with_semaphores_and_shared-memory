@@ -8,7 +8,7 @@ enc2 is a check sum process to check if message send and resend for p1
 p2 is the second person in chat
 Messages past through arguments at p1-p2.
 
-![Optional Text](../Chat_with_semaphores_and_shared-memory/read_me_image/processes.png)
+![image](../Chat_with_semaphores_and_shared-memory/read_me_image/processes.png)
 
 Compile: make && mkdir key
 Delete: make clean
